@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1027112230279",
+    "firebase_url": "https://excel-academy-online-default-rtdb.firebaseio.com",
+    "project_id": "excel-academy-online",
+    "storage_bucket": "excel-academy-online.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1027112230279:android:7d45ccd3b9d0f816f9c722",
+        "android_client_info": {
+          "package_name": "com.excel_academy.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1027112230279-clob48i1d7e0pd1uhlmgur8i7j3gu000.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmioqey7cVpD_nvJBmLsUpiBoijCPmjEo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1027112230279-clob48i1d7e0pd1uhlmgur8i7j3gu000.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1027112230279-a9m2kso59k8k5hmi3ka7ds1id0a4tlbr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.excelAcademy"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
