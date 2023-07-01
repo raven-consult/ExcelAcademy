@@ -10,8 +10,14 @@ import "../service.dart";
 class UserSetup extends StatefulWidget {
   final Function prev;
   final Function next;
+  final Function goHome;
 
-  const UserSetup({super.key, required this.prev, required this.next});
+  const UserSetup({
+    super.key,
+    required this.next,
+    required this.prev,
+    required this.goHome,
+  });
 
   @override
   State<UserSetup> createState() => _UserSetup();
@@ -35,16 +41,28 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
   String _emailAddress = "";
   DateTime _dateOfBirth = DateTime.now();
 
+  final _stepsRequirements = [
+    ["fullname", "email"],
+    ["username", "dateOfBirth"],
+    ["gender", "password"],
+  ];
+
   @override
   void initState() {
     super.initState();
     _controller = TabController(length: 3, vsync: this);
+    _showButton["email"] = 0;
+    _showButton["fullname"] = 0;
   }
 
   @override
   void dispose() {
     super.dispose();
     _controller.dispose();
+  }
+
+  Future _loginWithoutPassword() async {
+    widget.goHome();
   }
 
   void showErrorDialog() {
@@ -83,11 +101,13 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: const [
               Text("What’s your email", style: TextStyle(fontSize: 40)),
               SizedBox(height: 4),
-              Text("Let’s begin by saving your email for next time",
-                  style: TextStyle(fontSize: 20)),
+              Text(
+                "Let’s begin by saving your email for next time",
+                style: TextStyle(fontSize: 20),
+              ),
             ],
           ),
         ),
@@ -103,15 +123,15 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
             if (!StringValidator.isLongerThan(6, value)) {
               SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
                 setState(() {
-                  _showButton["username"] = 0;
+                  _showButton["fullname"] = 0;
                 });
               });
-              return "Choose longer username";
+              return "Choose longer full name";
             } else {
-              if (_showButton["username"] != null) {
+              if (_showButton["fullname"] != null) {
                 SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
                   setState(() {
-                    _showButton.remove("username");
+                    _showButton.remove("fullname");
                   });
                 });
               }
@@ -168,7 +188,7 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: const [
               Text("We keep it secure", style: TextStyle(fontSize: 40)),
               SizedBox(height: 4),
               Text(
@@ -225,14 +245,18 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
                 );
 
                 if (date != null) {
-                  setState(() {
-                    _dateOfBirth = date;
-                    _dateController.text =
-                        "${date.day}/${date.month}/${date.year}";
+                  setState(() {});
+                  SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                    setState(() {
+                      _dateOfBirth = date;
+                      _dateController.text =
+                          "${date.day}/${date.month}/${date.year}";
+                      _showButton.remove("dateOfBirth");
+                    });
                   });
                 }
               },
-              icon: const Icon(Icons.alarm),
+              icon: const Icon(Icons.event),
             ),
             hintText: "Date of Birth",
             border: const OutlineInputBorder(),
@@ -253,11 +277,13 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: const [
               Text("Getting you ready!", style: TextStyle(fontSize: 40)),
               SizedBox(height: 4),
-              Text("We are fired-up, we can’t wait for your to finally join us",
-                  style: TextStyle(fontSize: 20)),
+              Text(
+                "We are fired-up, we can’t wait for your to finally join us",
+                style: TextStyle(fontSize: 20),
+              ),
             ],
           ),
         ),
@@ -330,8 +356,11 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
       }).toList(),
       onChanged: (newValue) {
         if (newValue != null) {
-          setState(() {
-            _gender = newValue;
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            setState(() {
+              _gender = newValue;
+              _showButton.remove("gender");
+            });
           });
         }
       },
@@ -339,7 +368,7 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
   }
 
   PreferredSizeWidget _appBar() {
-    var stepText = _totalSteps == 0
+    var stepText = _totalSteps - 1 == 0
         ? "THAT'S A WRAP"
         : "${_totalSteps - _currentStep} MORE STEPS";
 
@@ -406,6 +435,24 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
     );
   }
 
+  Widget _scaffold({required Widget child}) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints viewportConstraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: viewportConstraints.maxHeight,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: child,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var isLast = _totalSteps == _currentStep;
@@ -414,79 +461,102 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
 
     return Scaffold(
       appBar: _appBar(),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        width: double.infinity,
-        child: Column(
+      body: _scaffold(
+        child: Stack(
           children: [
-            _stepsBar(context),
-            SizedBox(
-              height: 265,
-              child: Form(
-                key: formKey,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                child: TabBarView(
-                  controller: _controller,
-                  children: [
-                    Column(children: _getStep(0)),
-                    Column(children: _getStep(1)),
-                    Column(children: _getStep(2)),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _stepsBar(context),
+                SizedBox(
+                  height: 2.7 * (MediaQuery.of(context).size.height / 8),
+                  child: Form(
+                    key: formKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: TabBarView(
+                      controller: _controller,
+                      children: [
+                        Column(children: _getStep(0)),
+                        Column(children: _getStep(1)),
+                        Column(children: _getStep(2)),
+                      ],
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                    disabledBackgroundColor: Colors.blue,
+                  ),
+                  onPressed:
+                      _showButton["loading"] == 1 || _showButton.isNotEmpty
+                          ? null
+                          : () async {
+                              formKey.currentState?.validate();
+                              if (isLast) {
+                                await _goToNextSection();
+                              } else {
+                                // Check the _stepsRequirements and add the errors to be fixed
+                                _controller.animateTo(_currentStep + 1);
+                                setState(() {
+                                  for (var item
+                                      in _stepsRequirements[_currentStep + 1]) {
+                                    _showButton[item] = 1;
+                                  }
+                                  _currentStep += 1;
+                                });
+                              }
+                            },
+                  child: isLast
+                      ? const Text("Create account")
+                      : const Text("Continue"),
+                ),
+              ],
+            ),
+            Positioned(
+              bottom: 70,
+              width: MediaQuery.of(context).size.width - 20,
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: defaultStyle,
+                  children: <TextSpan>[
+                    const TextSpan(
+                      text: "By Creating an account, you accept Excel Academy",
+                    ),
+                    TextSpan(
+                      text: " Terms of Use ",
+                      style: linkStyle,
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          print("Terms of Use");
+                        },
+                    ),
+                    const TextSpan(text: "and "),
+                    TextSpan(
+                      text: "Privacy Policy",
+                      style: linkStyle,
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          print("Privacy Policy");
+                        },
+                    ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: _showButton["loading"] != 1 || _showButton.isEmpty
-                  ? () async {
-                      formKey.currentState?.validate();
-                      if (isLast) {
-                        await _goToNextSection();
-                      } else {
-                        _controller.animateTo(_currentStep + 1);
-                        setState(() {
-                          _currentStep += 1;
-                        });
-                      }
-                    }
-                  : null,
-              child: isLast
-                  ? const Text("Create account")
-                  : const Text("Continue"),
-            ),
-            const Spacer(),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                style: defaultStyle,
-                children: <TextSpan>[
-                  const TextSpan(
-                    text: "By Creating an account, you accept Excel Academy",
-                  ),
-                  TextSpan(
-                    text: " Terms of Use ",
-                    style: linkStyle,
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        print("Terms of Use");
-                      },
-                  ),
-                  const TextSpan(text: "and "),
-                  TextSpan(
-                    text: "Privacy Policy",
-                    style: linkStyle,
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        print("Privacy Policy");
-                      },
-                  ),
-                ],
+            Positioned(
+              bottom: 200,
+              width: MediaQuery.of(context).size.width - 25,
+              child: OutlinedButton(
+                onPressed: () {
+                  _loginWithoutPassword();
+                },
+                child: const Text("Login without password"),
               ),
             ),
-            const SizedBox(height: 30),
           ],
         ),
       ),

@@ -7,68 +7,50 @@ const appBarTheme = AppBarTheme(
 );
 
 final textButtonStyle = TextButtonThemeData(
-  style: ButtonStyle(
-    shape: MaterialStateProperty.all(
-      const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(4),
-        ),
+  style: TextButton.styleFrom(
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(4),
       ),
     ),
-    foregroundColor: MaterialStateProperty.all(
-      colorScheme.primary,
-    ),
+    minimumSize: const Size.fromHeight(60),
+    foregroundColor: colorScheme.primary,
   ),
 );
 
 final elevatedButtonStyle = ElevatedButtonThemeData(
-  style: ButtonStyle(
-    shape: MaterialStateProperty.all(
-      const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(4),
-        ),
+  style: ElevatedButton.styleFrom(
+    elevation: 0,
+    disabledBackgroundColor: colorScheme.primary.withOpacity(0.5),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(4),
       ),
     ),
-    elevation: MaterialStateProperty.all(0),
     splashFactory: NoSplash.splashFactory,
-    minimumSize: MaterialStateProperty.all(
-      const Size.fromHeight(50),
-    ),
-    backgroundColor: MaterialStateProperty.all(
-      colorScheme.primary,
-    ),
-    foregroundColor: MaterialStateProperty.all(
-      colorScheme.onPrimary,
-    ),
+    minimumSize: const Size.fromHeight(60),
+    backgroundColor: colorScheme.primary,
+    foregroundColor: colorScheme.onPrimary,
   ),
 );
 
 final outlinedButtonStyle = OutlinedButtonThemeData(
-  style: ButtonStyle(
-    shape: MaterialStateProperty.all(
-      const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(4),
-        ),
+  style: OutlinedButton.styleFrom(
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(4),
       ),
     ),
-    elevation: MaterialStateProperty.all(0),
+    elevation: 0,
     splashFactory: NoSplash.splashFactory,
-    backgroundColor: MaterialStateProperty.all(
-      Colors.white,
-    ),
-    minimumSize: MaterialStateProperty.all(
-      const Size.fromHeight(50),
-    ),
+    backgroundColor: Colors.white,
+    minimumSize: const Size.fromHeight(60),
+    foregroundColor: Colors.black,
     /* side: MaterialStateProperty.all( */
     /*   const BorderSide( */
     /*     color: Color(0x00BBBBBB), */
     /*   ), */
     /* ), */
-    foregroundColor: MaterialStateProperty.all(
-      Colors.black,
-    ),
   ),
 );
 

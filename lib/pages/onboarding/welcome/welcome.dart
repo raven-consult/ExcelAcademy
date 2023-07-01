@@ -134,7 +134,7 @@ class _Welcome extends State<Welcome> with SingleTickerProviderStateMixin {
   Widget _topSection() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      height: 2 * (MediaQuery.of(context).size.height / 3),
+      height: 2.1 * (MediaQuery.of(context).size.height / 3),
       child: TabBarView(
         controller: _tabController,
         physics: const NeverScrollableScrollPhysics(),
@@ -193,14 +193,14 @@ class _Welcome extends State<Welcome> with SingleTickerProviderStateMixin {
   Widget _bottomSection() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      height: 0.3 * (MediaQuery.of(context).size.height / 3),
+      height: 0.65 * (MediaQuery.of(context).size.height / 3),
       child: Column(
         children: [
           SizedBox(
             height: 5,
             child: _step(),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 30),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0),
             child: ElevatedButton(

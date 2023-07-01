@@ -18,7 +18,7 @@ class _Login extends State<Login> {
 
   String _email = "";
   String _password = "";
-  bool _showPassword = false;
+  bool _hidePassword = true;
 
   String? _emailError;
   String? _passwordError;
@@ -94,15 +94,15 @@ class _Login extends State<Login> {
             suffixIcon: IconButton(
               onPressed: () {
                 setState(() {
-                  _showPassword = !_showPassword;
+                  _hidePassword = !_hidePassword;
                 });
               },
-              icon: _showPassword
+              icon: _hidePassword
                   ? const Icon(Icons.visibility_off)
                   : const Icon(Icons.visibility),
             ),
           ),
-          obscureText: _showPassword,
+          obscureText: _hidePassword,
         ),
       ],
     );
@@ -122,7 +122,7 @@ class _Login extends State<Login> {
       widget.goHome();
     } on IncorrectPasswordError catch (e) {
       setState(() {
-        _emailError = e.cause;
+        _passwordError = e.cause;
       });
     } on UserDoesNotExistError catch (e) {
       setState(() {
@@ -135,6 +135,10 @@ class _Login extends State<Login> {
     } catch (e) {
       setState(() {
         _emailError = e.toString();
+      });
+    } finally {
+      setState(() {
+        _loading = false;
       });
     }
   }

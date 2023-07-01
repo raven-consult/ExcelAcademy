@@ -110,7 +110,7 @@ class _PhoneSetup extends State<PhoneSetup> {
     );
   }
 
-  Widget _bottomSection() {
+  Widget _bottomSection(BuildContext context) {
     return Expanded(
       flex: 8,
       child: Container(
@@ -119,14 +119,16 @@ class _PhoneSetup extends State<PhoneSetup> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(
+            SizedBox(
               width: double.infinity,
               child: Text(
                 "Easy setup to get started",
-                style: TextStyle(fontSize: 35, fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             _item(
               "Setup Fingerprint",
               "Add a fingerprint authentication to access your account next time",
@@ -144,6 +146,14 @@ class _PhoneSetup extends State<PhoneSetup> {
               "Add a default background system color",
               "system_color",
               (done) {
+                showBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return Container(
+                        height: 200,
+                        color: Colors.amber,
+                      );
+                    });
                 done();
               },
             ),
@@ -182,7 +192,7 @@ class _PhoneSetup extends State<PhoneSetup> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints viewportConstraints) {
+        builder: (_, BoxConstraints viewportConstraints) {
           return CustomScrollView(
             slivers: [
               SliverFillRemaining(
@@ -193,7 +203,7 @@ class _PhoneSetup extends State<PhoneSetup> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _topSection(),
-                    _bottomSection(),
+                    _bottomSection(context),
                   ],
                 ),
               ),
