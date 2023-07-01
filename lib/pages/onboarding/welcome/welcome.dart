@@ -137,7 +137,6 @@ class _Welcome extends State<Welcome> with SingleTickerProviderStateMixin {
       height: 2.1 * (MediaQuery.of(context).size.height / 3),
       child: TabBarView(
         controller: _tabController,
-        physics: const NeverScrollableScrollPhysics(),
         children: _welcomeItems
             .map(
               (item) => Column(
