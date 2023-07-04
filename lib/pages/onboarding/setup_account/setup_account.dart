@@ -15,7 +15,7 @@ typedef Callback = Widget Function(
     Function prev, Function next, Function goHome, Function restart);
 
 class _SetupAccount extends State<SetupAccount> {
-  int _index = 1;
+  int _index = 0;
 
   final List<Callback> _widgets = [
     (prev, next, goHome, restart) => UserSetup(
