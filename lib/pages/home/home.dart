@@ -1,12 +1,19 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+import "router.dart";
+
+class Home extends StatefulWidget {
+  final String subRoute;
+
+  const Home({super.key, required this.subRoute});
 
   @override
+  State<Home> createState() => _Home();
+}
+
+class _Home extends State<Home> {
+  @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text("Home page"),
-    );
+    return HomeRouter(widget.subRoute);
   }
 }

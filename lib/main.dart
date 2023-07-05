@@ -59,7 +59,7 @@ class ExcelAcademy extends StatelessWidget {
 
     switch (settings.name) {
       case "/home":
-        page = const Home();
+        page = const Home(subRoute: "/");
         break;
       case "/onboarding":
         page = const Onboarding(subRoute: "/");
