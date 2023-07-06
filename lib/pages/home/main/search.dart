@@ -31,6 +31,7 @@ class Search extends StatelessWidget {
               child: TextButton(
                 onPressed: () {
                   print("Search");
+                  FocusManager.instance.primaryFocus?.unfocus();
                 },
                 child: const Text("Search"),
               ),
