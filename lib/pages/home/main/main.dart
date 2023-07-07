@@ -51,6 +51,7 @@ class Main extends StatelessWidget {
             email: "example@gmail.com",
             photoURL: "https://example.com/johndoe.jpg",
           )
+        // ignore: dead_code
         : null;
 
     return Scaffold(

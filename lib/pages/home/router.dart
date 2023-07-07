@@ -14,9 +14,9 @@ class HomeRouter extends StatefulWidget {
 }
 
 class _HomeRouter extends State<HomeRouter> {
-  void _tapOut() {
-    Navigator.of(context).pushReplacementNamed("/home");
-  }
+  /* void _tapOut() { */
+  /*   Navigator.of(context).pushReplacementNamed("/home"); */
+  /* } */
 
   Route _onGenerateRoute(RouteSettings settings) {
     Widget? page;

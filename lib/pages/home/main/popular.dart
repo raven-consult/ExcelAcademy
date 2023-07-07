@@ -3,40 +3,40 @@ import 'package:flutter/material.dart';
 class PopularCourses extends StatelessWidget {
   const PopularCourses({super.key});
 
-  Widget _buildCourseItem() {
-    return Container(
-      width: 250,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        /* borderRadius: BorderRadius.only( */
-        /*   topLeft: Radius.circular(10), */
-        /*   topRight: Radius.circular(10), */
-        /* ), */
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 100,
-            width: double.infinity,
-            child: FlutterLogo(
-              style: FlutterLogoStyle.horizontal,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Row(
-            children: const [
-              FlutterLogo(size: 25),
-              SizedBox(width: 4),
-              Text("English Subtitle"),
-            ],
-          ),
-          const SizedBox(height: 4),
-          const Text("Course Name"),
-        ],
-      ),
-    );
-  }
+  /* Widget _buildCourseItem() { */
+  /*   return Container( */
+  /*     width: 250, */
+  /*     decoration: const BoxDecoration( */
+  /*       color: Colors.white, */
+  /*       /1* borderRadius: BorderRadius.only( *1/ */
+  /*       /1*   topLeft: Radius.circular(10), *1/ */
+  /*       /1*   topRight: Radius.circular(10), *1/ */
+  /*       /1* ), *1/ */
+  /*     ), */
+  /*     child: Column( */
+  /*       crossAxisAlignment: CrossAxisAlignment.start, */
+  /*       children: [ */
+  /*         const SizedBox( */
+  /*           height: 100, */
+  /*           width: double.infinity, */
+  /*           child: FlutterLogo( */
+  /*             style: FlutterLogoStyle.horizontal, */
+  /*           ), */
+  /*         ), */
+  /*         const SizedBox(height: 4), */
+  /*         Row( */
+  /*           children: const [ */
+  /*             FlutterLogo(size: 25), */
+  /*             SizedBox(width: 4), */
+  /*             Text("English Subtitle"), */
+  /*           ], */
+  /*         ), */
+  /*         const SizedBox(height: 4), */
+  /*         const Text("Course Name"), */
+  /*       ], */
+  /*     ), */
+  /*   ); */
+  /* } */
 
   Widget _buildCourseCard() {
     return Container(
