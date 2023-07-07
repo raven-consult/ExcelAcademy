@@ -390,14 +390,20 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
       title: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
+          Text(
             "CREATE AN ACCOUNT",
-            style: TextStyle(fontSize: 16, color: Colors.red),
+            style: TextStyle(
+              fontSize: 16,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             stepText,
-            style: const TextStyle(fontSize: 14, color: Colors.blue),
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ],
       ),
@@ -458,7 +464,7 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     var isLast = _totalSteps == _currentStep;
-    const linkStyle = TextStyle(color: Colors.blue);
+    var linkStyle = TextStyle(color: Theme.of(context).colorScheme.primary);
     const defaultStyle = TextStyle(color: Colors.grey, fontSize: 16.0);
 
     return Scaffold(
@@ -488,10 +494,6 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
                   ),
                 ),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50),
-                    disabledBackgroundColor: Colors.blue,
-                  ),
                   onPressed:
                       _showButton["loading"] == 1 || _showButton.isNotEmpty
                           ? null
