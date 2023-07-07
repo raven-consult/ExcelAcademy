@@ -71,7 +71,6 @@ jobs:
   functions_build:
     name: Functions build
     runs-on: ubuntu-latest
-    if: jobs.file_check.outputs.functions == "1"
 
     steps:
       - name: Checkout
@@ -103,7 +102,6 @@ jobs:
   configurations_deploy:
     name: Firebase configurations deploy
     runs-on: ubuntu-latest
-    if: jobs.file_check.outputs.config == "1"
 
     steps:
       - name: Checkout

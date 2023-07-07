@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
 
     needs: determine_build
-    if: jobs.determine_build.outputs.mobile == "true"
+    if: ${{ needs.determine_build.outputs.mobile == "true" }}
 
     steps:
       - name: Checkout
@@ -92,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
 
     needs: determine_build
-    if: jobs.determine_build.outputs.functions == "true"
+    if: ${{ needs.determine_build.outputs.functions == "true" }}
 
     steps:
       - name: Checkout
