@@ -91,7 +91,10 @@ jobs:
         working-directory: functions
 
       - name: Firebase deploy functions
-        run: firebase deploy --only functions
+        run: |
+          firebase deploy \
+              --only functions \
+              --project=excel-academy-online
 
   configurations_deploy:
     name: Firebase configurations deploy
@@ -122,7 +125,10 @@ jobs:
         working-directory: functions
 
       - name: Firebase deploy functions
-        run: firebase deploy --only database,firestore,remoteconfig,storage
+        run: |
+          firebase deploy \
+              --only database,firestore,remoteconfig,storage \
+              --project=excel-academy-online
 
   android_deploy:
     name: Android Mobile Deploy
@@ -165,6 +171,7 @@ jobs:
           message: ${{ steps.message.outputs.message }}
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
+              --project=excel-academy-mobile \
               --app 1:1027112230279:android:7d45ccd3b9d0f816f9c722 \
               --release-notes "$message" \
               --groups "staging, admin"
