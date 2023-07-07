@@ -54,7 +54,6 @@ final outlinedButtonStyle = OutlinedButtonThemeData(
   ),
 );
 
-
 /* final buttonStyle = ButtonStyle( */
 /*   shape: MaterialStateProperty.all( */
 /*     const RoundedRectangleBorder( */

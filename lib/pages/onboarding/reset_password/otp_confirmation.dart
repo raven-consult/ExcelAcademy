@@ -181,7 +181,8 @@ class _OTPConfirmation extends State<OTPConfirmation> {
                                 onPressed: _resendOTP,
                                 child: const Text(
                                   "Resend OTP? Click here",
-                                  style: TextStyle(fontSize: 17,
+                                  style: TextStyle(
+                                    fontSize: 17,
                                   ),
                                 ),
                               )

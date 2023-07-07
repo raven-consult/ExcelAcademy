@@ -28,7 +28,7 @@ class _PhoneSetup extends State<PhoneSetup> {
   }
 
   Widget _topSection() {
-    return Expanded(
+    return Container(child: Expanded(
       flex: 7,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -50,7 +50,7 @@ class _PhoneSetup extends State<PhoneSetup> {
           ),
         ],
       ),
-    );
+    ),);
   }
 
   Widget _item(String title, String subtitle, String slugName,

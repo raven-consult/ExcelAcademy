@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1027112230279',
     projectId: 'excel-academy-online',
     storageBucket: 'excel-academy-online.appspot.com',
-    iosClientId: '1027112230279-pe50tk8l31hlmhr9os0o39v78bpgs58e.apps.googleusercontent.com',
+    iosClientId:
+        '1027112230279-pe50tk8l31hlmhr9os0o39v78bpgs58e.apps.googleusercontent.com',
     iosBundleId: 'com.excelacademy.mobile',
   );
 }

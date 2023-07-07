@@ -53,6 +53,9 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _controller = TabController(length: 3, vsync: this);
+    _controller.addListener(() {
+      print(_currentStep);
+    });
     _showButton["email"] = 0;
     _showButton["fullname"] = 0;
   }
@@ -100,10 +103,10 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 16),
-          child: const Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: const [
               Text("What’s your email", style: TextStyle(fontSize: 40)),
               SizedBox(height: 4),
               Text(
@@ -370,7 +373,7 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
   }
 
   PreferredSizeWidget _appBar() {
-    var stepText = _totalSteps - 1 == 0
+    var stepText = _totalSteps - _currentStep == 0
         ? "THAT'S A WRAP"
         : "${_totalSteps - _currentStep} MORE STEPS";
 
@@ -384,6 +387,7 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
           color: Theme.of(context).colorScheme.primary,
         ),
         onPressed: () {
+          Navigator.of(context).pop();
           FirebaseCrashlytics.instance.log("Back button pressed");
         },
       ),
