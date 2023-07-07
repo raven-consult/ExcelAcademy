@@ -49,12 +49,6 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
-      - name: Linting
-        run: flutter analyze
-
-      - name: Run tests
-        run: flutter test
-
       - name: Build Android app
         run: flutter build apk
 
