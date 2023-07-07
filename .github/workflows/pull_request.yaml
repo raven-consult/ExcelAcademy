@@ -1,0 +1,166 @@
+name: Pull Reauest build
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  determine_build:
+    name: Determine builds to run
+    runs-on: ubuntu-latest
+
+    outputs:
+      mobile: ${{ steps.changes.outputs.mobile }}
+      functions: ${{ steps.changes.outputs.functions }}
+
+    steps:
+      - id: changes
+        name: Paths Changes Filter
+        uses: dorny/paths-filter@v2.11.1
+        with:
+          filters: |
+            mobile:
+              - "lib/**"
+              - "ios/**"
+              - "android/**"
+            functions:
+              - "functions/**"
+
+  android_build:
+    name: Android Build
+    runs-on: ubuntu-latest
+
+    needs: determine_build
+    if: jobs.determine_build.outputs.mobile == "true"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "zulu"
+          java-version: "12.x"
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.7.12"
+          channel: "stable"
+
+      - name: Add Github signer properties file
+        id: exc_github_signer_properties
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: "key.properties"
+          fileDir: "android"
+          encodedString: ${{ secrets.EXC_GITHUB_SIGNER_PROPERTIES }}
+
+      - name: Add Github signer keystore
+        id: exc_github_signer_keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileDir: "android/app"
+          fileName: "github-keystore.jks"
+          encodedString: ${{ secrets.EXC_GITHUB_SIGNER_KEYSTORE }}
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Linting
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build Android app
+        run: flutter build apk
+
+      - name: "Tar files"
+        run: tar -cvf artifacts.tar build/app/outputs/flutter-apk/*.apk
+
+      - name: Upload Android apk
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: artifacts.tar
+          retention-days: 1
+
+  functions_test:
+    name: Functions Test
+    runs-on: ubuntu-latest
+
+    needs: determine_build
+    if: jobs.determine_build.outputs.functions == "true"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Nodejs 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - id: auth
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EXCEL_ACADEMY_ONLINE }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - name: Install firebase
+        run: npm install -g firebase-tools
+
+      - name: Install Dependencies
+        run: yarn
+        working-directory: functions
+
+      - name: Run tests
+        run: yarn test
+        working-directory: functions
+
+  android_deploy:
+    name: Android Mobile Deploy
+
+    needs: android_build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: artifacts
+
+      - name: Untar Artifacts
+        run: tar -xvf artifacts.tar
+
+      - id: message
+        name: Get commit message
+        run: echo message=`git show -s --format=%B` >> "$GITHUB_OUTPUT"
+
+      - id: auth
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EXCEL_ACADEMY_ONLINE }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - name: Install firebase
+        run: npm install -g firebase-tools
+
+        # Deploy to only staging users
+      - name: Deploy Android app to Firebase app distribution
+        env:
+          message: ${{ steps.message.outputs.message }}
+        run: |
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
+              --app 1:1027112230279:android:7d45ccd3b9d0f816f9c722 \
+              --release-notes "$message" \
+              --groups "development"
