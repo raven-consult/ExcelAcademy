@@ -100,10 +100,10 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Column(
+          child: const Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text("What’s your email", style: TextStyle(fontSize: 40)),
               SizedBox(height: 4),
               Text(

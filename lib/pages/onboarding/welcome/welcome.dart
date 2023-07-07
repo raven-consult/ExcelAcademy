@@ -50,6 +50,11 @@ class _Welcome extends State<Welcome> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      setState(() {
+        _currentStep = _tabController.index;
+      });
+    });
   }
 
   @override
