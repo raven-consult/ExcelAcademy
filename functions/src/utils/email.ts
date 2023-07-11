@@ -1,4 +1,5 @@
 import {createTransport} from "nodemailer";
+import * as functions from 'firebase-functions';
 
 // class EmailManager {
 
@@ -32,7 +33,7 @@ class EmailService {
       to: option.recipientEmail,
     });
 
-    console.debug("Message info:", info);
+    functions.logger.debug("Message info:", info);
   }
 }
 
