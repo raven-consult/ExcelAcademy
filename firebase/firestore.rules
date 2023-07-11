@@ -7,6 +7,12 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if request.auth.uid != null;
       allow update: if request.auth.uid == userId;
+
+      // The authenticated user can add and remove items from their cart.
+      match /cart/{productId} {
+        allow create: if request.auth.uid == userId;
+        allow read, update, delete: if request.auth.uid == userId;
+      }
     }
   }
 }
