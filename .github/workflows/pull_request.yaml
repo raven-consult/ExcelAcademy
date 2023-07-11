@@ -1,8 +1,11 @@
-name: Pull Reauest build
+name: Pull Request build
 
 on:
   pull_request:
     branches: [master]
+
+permissions:
+  pull-requests: read
 
 jobs:
   determine_build:
