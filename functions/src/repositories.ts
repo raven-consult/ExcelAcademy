@@ -1,6 +1,7 @@
 import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
 
-import OTPGenerator from "./services/otp";
+import OTPGenerator from "./utils/otp";
 
 interface UserOTPData {
   email: string;
@@ -30,7 +31,7 @@ class UserOTPRepository {
 
     if (snapshot.exists()) {
       const data = snapshot.toJSON() as UserOTPData;
-      console.log(data);
+      functions.logger.log(data);
       if (data.email == email) {
         res = true;
       }
