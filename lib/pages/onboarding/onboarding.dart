@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/pages/onboarding/router.dart';
 
+class OnboardingOptions {
+  final String initialRoute;
+
+  const OnboardingOptions({
+    required this.initialRoute,
+  });
+}
+
 class Onboarding extends StatefulWidget {
   final String subRoute;
 

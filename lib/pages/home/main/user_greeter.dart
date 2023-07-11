@@ -4,12 +4,16 @@ import "package:flutter/gestures.dart";
 import "package:firebase_auth/firebase_auth.dart";
 
 class UserGreeter extends StatelessWidget {
-  final User? user;
+  final Function onClickLogin;
+  final Function onClickRegister;
 
-  const UserGreeter({
+  UserGreeter({
     super.key,
-    required this.user,
+    required this.onClickLogin,
+    required this.onClickRegister,
   });
+
+  User? get _user => FirebaseAuth.instance.currentUser;
 
   Widget _userNotAuthenticated(BuildContext context) {
     return Column(
@@ -36,8 +40,8 @@ class UserGreeter extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    print("Hello World");
+                  ..onTap = () async {
+                    onClickRegister();
                   },
               ),
               const TextSpan(
@@ -50,8 +54,8 @@ class UserGreeter extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    print("Hello World");
+                  ..onTap = () async {
+                    onClickLogin();
                   },
               ),
             ],
@@ -62,6 +66,9 @@ class UserGreeter extends StatelessWidget {
   }
 
   Widget _userAuthenticated(BuildContext context) {
+    var name = _user?.displayName ?? "Simisola";
+    var profilePhoto = _user?.photoURL ?? "https://picsum.photos/200";
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -78,7 +85,7 @@ class UserGreeter extends StatelessWidget {
                     ),
               ),
               Text(
-                "Simisola",
+                name,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -88,10 +95,10 @@ class UserGreeter extends StatelessWidget {
         ),
         Container(
           width: 90,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
             image: DecorationImage(
-              image: AssetImage("assets/logo/logo.png"),
+              image: NetworkImage(profilePhoto),
               fit: BoxFit.cover,
             ),
           ),
@@ -108,7 +115,7 @@ class UserGreeter extends StatelessWidget {
   }
 
   Widget _buildUserGreeter(BuildContext context) {
-    if (user == null) {
+    if (_user == null) {
       return _userNotAuthenticated(context);
     } else {
       return _userAuthenticated(context);

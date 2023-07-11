@@ -2,6 +2,8 @@ import "package:flutter/material.dart";
 
 import "main/main.dart";
 
+import "package:mobile/pages/onboarding/onboarding.dart";
+
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class HomeRouter extends StatefulWidget {
@@ -18,12 +20,33 @@ class _HomeRouter extends State<HomeRouter> {
   /*   Navigator.of(context).pushReplacementNamed("/home"); */
   /* } */
 
+  void gotoRegister() async {
+    await Navigator.of(context).pushNamed(
+      "/onboarding",
+      arguments: const OnboardingOptions(
+        initialRoute: "/create_account",
+      ),
+    );
+  }
+
+  void gotoLogin() async {
+    await Navigator.of(context).pushNamed(
+      "/onboarding",
+      arguments: const OnboardingOptions(
+        initialRoute: "/login",
+      ),
+    );
+  }
+
   Route _onGenerateRoute(RouteSettings settings) {
     Widget? page;
 
     switch (settings.name) {
       case "/":
-        page = const Main();
+        page = Main(
+          gotoLogin: gotoLogin,
+          gotoRegister: gotoRegister,
+        );
         break;
     }
 

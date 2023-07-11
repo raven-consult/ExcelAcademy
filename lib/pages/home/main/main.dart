@@ -10,7 +10,14 @@ import "ongoing_course.dart";
 import "course_programs_list.dart";
 
 class Main extends StatelessWidget {
-  const Main({super.key});
+  final Function gotoLogin;
+  final Function gotoRegister;
+
+  const Main({
+    super.key,
+    required this.gotoLogin,
+    required this.gotoRegister,
+  });
 
   Widget _bottomNavigation() {
     return SizedBox(
@@ -45,15 +52,6 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = true
-        ? MockUser(
-            displayName: "John Doe",
-            email: "example@gmail.com",
-            photoURL: "https://example.com/johndoe.jpg",
-          )
-        // ignore: dead_code
-        : null;
-
     return Scaffold(
       bottomNavigationBar: _bottomNavigation(),
       body: SafeArea(
@@ -61,7 +59,10 @@ class Main extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Column(
             children: [
-              UserGreeter(user: user),
+              UserGreeter(
+                onClickLogin: gotoLogin,
+                onClickRegister: gotoRegister,
+              ),
               const SizedBox(height: 8),
               const NavCart(),
               const SizedBox(height: 24),
