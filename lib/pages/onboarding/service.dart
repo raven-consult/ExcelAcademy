@@ -8,13 +8,13 @@ import "errors.dart";
 class BiometricService {
   final _auth = LocalAuthentication();
 
-  Future<bool> fingerprintAuth() async {
+  Future<bool> fingerprintAuth([String message = "Authentication"]) async {
     var canAuthenticate = await _auth.canCheckBiometrics;
     var isDeviceSupported = await _auth.isDeviceSupported();
 
     if (canAuthenticate && isDeviceSupported) {
       final bool didAuthenticate = await _auth.authenticate(
-        localizedReason: "Authentication",
+        localizedReason: message,
         options: const AuthenticationOptions(biometricOnly: true),
       );
       return didAuthenticate;
