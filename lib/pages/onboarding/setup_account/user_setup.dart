@@ -4,10 +4,12 @@ import "package:flutter/material.dart";
 import "package:flutter/gestures.dart";
 import "package:flutter/scheduler.dart";
 
+import "package:firebase_auth/firebase_auth.dart";
 import "package:firebase_crashlytics/firebase_crashlytics.dart";
 
 import "../utils.dart";
 import "../service.dart";
+import "package:mobile/services/user.dart";
 
 class UserSetup extends StatefulWidget {
   final Function prev;
@@ -36,11 +38,13 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
   final _loginService = OnboardingService();
   final _dateController = TextEditingController();
 
-  String _gender = "";
+  final FirebaseAuth _fireaseAuth = FirebaseAuth.instance;
+
   String _password = "";
   String _fullName = "";
   String _username = "";
   String _emailAddress = "";
+  Gender _gender = Gender.male;
   DateTime _dateOfBirth = DateTime.now();
 
   final _stepsRequirements = [
@@ -86,7 +90,17 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
       _showButton["loading"] = 1;
     });
     try {
-      await _loginService.signUpWithPassword(_emailAddress, _password);
+      var res = await _fireaseAuth.signInWithEmailAndPassword(
+        email: _emailAddress,
+        password: _password,
+      );
+      await res.user!.updateDisplayName(_fullName);
+      var userService = UserService(res.user!.uid);
+      await userService.updateUserData(
+        gender: _gender,
+        username: _username,
+        dateOfBirth: _dateOfBirth,
+      );
       widget.next();
     } catch (e) {
       showErrorDialog();
@@ -363,7 +377,11 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
         if (newValue != null) {
           SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
             setState(() {
-              _gender = newValue;
+              if (newValue == "Male") {
+                _gender = Gender.male;
+              } else {
+                _gender = Gender.female;
+              }
               _showButton.remove("gender");
             });
           });

@@ -1,4 +1,5 @@
 import "dart:io";
+
 import "package:flutter/material.dart";
 
 import "package:file_picker/file_picker.dart";
@@ -7,6 +8,7 @@ import "package:firebase_storage/firebase_storage.dart";
 
 import "../service.dart";
 import "loading_indicator.dart";
+import "package:mobile/services/user.dart";
 
 User getCurrentUser() {
   return FirebaseAuth.instance.currentUser!;
@@ -66,6 +68,10 @@ class _PhoneSetup extends State<PhoneSetup> {
       try {
         await ref.putFile(file);
         await FirebaseAuth.instance.currentUser!.updatePhotoURL(ref.fullPath);
+        var userService = UserService(currentUser.uid);
+        await userService.updateUserData(
+          profilePicture: ref.fullPath,
+        );
         setState(() {
           _selectedFile = file;
         });
