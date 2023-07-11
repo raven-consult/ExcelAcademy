@@ -1,11 +1,13 @@
 import "dart:async";
 
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter/foundation.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:firebase_crashlytics/firebase_crashlytics.dart";
 
 import "theme/theme.dart";
+import "theme/color.dart";
 import "firebase_options.dart";
 
 import "pages/home/home.dart";
@@ -50,12 +52,21 @@ class ExcelAcademy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: theme,
-      darkTheme: darkTheme,
-      title: "Excel Academy",
-      onGenerateRoute: _onGenerateRoute,
-      home: const Onboarding(subRoute: "/"),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        systemNavigationBarColor: colorScheme.surface,
+        /* statusBarColor: Colors.transparent, //top status bar */
+        /* statusBarIconBrightness: Brightness.dark, // status bar icons' color */
+        /* systemNavigationBarIconBrightness: */
+        /*     Brightness.dark, //navigation bar icons' color */
+      ),
+      child: MaterialApp(
+        theme: theme,
+        darkTheme: darkTheme,
+        title: "Excel Academy",
+        onGenerateRoute: _onGenerateRoute,
+        home: const Onboarding(subRoute: "/"),
+      ),
     );
   }
 
