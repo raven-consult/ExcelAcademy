@@ -295,7 +295,7 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
         _dropDownFormField(),
         const SizedBox(height: 8),
         TextFormField(
-          obscureText: _showPassword,
+          obscureText: !_showPassword,
           decoration: InputDecoration(
             hintText: "Password",
             border: const OutlineInputBorder(),
@@ -305,7 +305,7 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
                   _showPassword = !_showPassword;
                 });
               },
-              icon: _showPassword
+              icon: !_showPassword
                   ? const Icon(Icons.visibility_off)
                   : const Icon(Icons.visibility),
             ),
