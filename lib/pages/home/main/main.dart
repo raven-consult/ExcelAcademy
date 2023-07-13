@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:firebase_auth_mocks/firebase_auth_mocks.dart";
 
 import "search.dart";
 import "popular.dart";
@@ -10,13 +9,17 @@ import "ongoing_course.dart";
 import "course_programs_list.dart";
 
 class Main extends StatelessWidget {
+  final Function gotoCart;
   final Function gotoLogin;
   final Function gotoRegister;
+  final Function gotoNotification;
 
   const Main({
     super.key,
+    required this.gotoCart,
     required this.gotoLogin,
     required this.gotoRegister,
+    required this.gotoNotification,
   });
 
   Widget _bottomNavigation() {
@@ -64,7 +67,10 @@ class Main extends StatelessWidget {
                 onClickRegister: gotoRegister,
               ),
               const SizedBox(height: 8),
-              const NavCart(),
+              NavCart(
+                goToCart: gotoCart,
+                goToNotifications: gotoNotification,
+              ),
               const SizedBox(height: 24),
               const Search(),
               const SizedBox(height: 24),

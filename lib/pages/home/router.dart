@@ -16,9 +16,13 @@ class HomeRouter extends StatefulWidget {
 }
 
 class _HomeRouter extends State<HomeRouter> {
-  /* void _tapOut() { */
-  /*   Navigator.of(context).pushReplacementNamed("/home"); */
-  /* } */
+  void _gotoCart() {
+    Navigator.of(context).pushNamed("/cart");
+  }
+
+  void _gotoNotification() {
+    Navigator.of(context).pushNamed("/notifications");
+  }
 
   void gotoRegister() async {
     await Navigator.of(context).pushNamed(
@@ -44,8 +48,10 @@ class _HomeRouter extends State<HomeRouter> {
     switch (settings.name) {
       case "/":
         page = Main(
+          gotoCart: _gotoCart,
           gotoLogin: gotoLogin,
           gotoRegister: gotoRegister,
+          gotoNotification: _gotoNotification,
         );
         break;
     }
