@@ -1,4 +1,9 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
+import "package:cached_network_image/cached_network_image.dart";
+
+const imageUrl = "https://firebasestorage.googleapis.com/v0"
+    "/b/excel-academy-online.appspot.com"
+    "/o/assets%2Fhomepage%2Fcontinue-learning.png?alt=media";
 
 class AdPanel extends StatelessWidget {
   const AdPanel({super.key});
@@ -6,11 +11,15 @@ class AdPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 200,
       width: double.infinity,
-      color: Colors.grey[100],
-      child: const FlutterLogo(
-        size: 200,
-        style: FlutterLogoStyle.horizontal,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: CachedNetworkImageProvider(
+            imageUrl,
+          ),
+        ),
       ),
     );
   }
