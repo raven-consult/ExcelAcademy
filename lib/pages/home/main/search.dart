@@ -12,16 +12,18 @@ class Search extends StatelessWidget {
           "What would you want to learn today?",
           style: Theme.of(context).textTheme.bodyLarge,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         TextField(
           decoration: InputDecoration(
             hintText: "Courses",
             focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
                 color: Colors.grey,
               ),
             ),
             border: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
                 color: Colors.grey,
               ),
