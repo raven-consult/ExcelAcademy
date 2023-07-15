@@ -76,7 +76,7 @@ class Main extends StatelessWidget {
               const SizedBox(height: 24),
               const AdPanel(),
               const SizedBox(height: 24),
-              const CourseProgramsList(),
+              CourseProgramsList(),
               const SizedBox(height: 24),
               const OngoingCourse(),
               const SizedBox(height: 24),
