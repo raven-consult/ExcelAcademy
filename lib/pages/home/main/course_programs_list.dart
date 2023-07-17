@@ -24,6 +24,10 @@ const prefix = "https://firebasestorage.googleapis.com/v0"
     "/o/assets%2Fpages%2Fhomepage%2Fprograms%2F"
     "{icon}?alt=media";
 
+String _getURL(String icon) {
+  return prefix.replaceFirst("{icon}", icon);
+}
+
 class CourseProgramsList extends StatelessWidget {
   CourseProgramsList({Key? key}) : super(key: key);
 
@@ -32,7 +36,7 @@ class CourseProgramsList extends StatelessWidget {
       initial: "ICAN",
       color: 0xFF0F0BAB,
       fullName: "Institute of Chartered Accountants of Nigeria",
-      assetUrl: prefix.replaceFirst("{icon}", "ican_logo.png"),
+      assetUrl: _getURL("ican_logo.png"),
       numOfLevels: 6,
       numOfCourses: 23,
     ),
@@ -40,7 +44,7 @@ class CourseProgramsList extends StatelessWidget {
       initial: "ACCA",
       color: 0xFFFF822B,
       fullName: "Association of Chartered Certified Accountants",
-      assetUrl: prefix.replaceFirst("{icon}", "acca_logo.png"),
+      assetUrl: _getURL("acca_logo.png"),
       numOfLevels: 6,
       numOfCourses: 23,
     ),
@@ -48,7 +52,7 @@ class CourseProgramsList extends StatelessWidget {
       initial: "CIMA",
       color: 0xFF1FAF73,
       fullName: "Chartered Institute of Management Accountants",
-      assetUrl: prefix.replaceFirst("{icon}", "cima_logo.png"),
+      assetUrl: _getURL("cima_logo.png"),
       numOfLevels: 6,
       numOfCourses: 23,
     ),
@@ -56,7 +60,7 @@ class CourseProgramsList extends StatelessWidget {
       initial: "CITN",
       color: 0xFF9747FF,
       fullName: "Chartered Institute of Taxation of Nigeria",
-      assetUrl: prefix.replaceFirst("{icon}", "citn_logo.png"),
+      assetUrl: _getURL("citn_logo.png"),
       numOfLevels: 6,
       numOfCourses: 23,
     ),
