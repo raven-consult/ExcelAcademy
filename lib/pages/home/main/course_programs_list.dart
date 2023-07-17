@@ -158,21 +158,31 @@ class CourseProgramsList extends StatelessWidget {
             );
           }).toList(),
         ),
-        const SizedBox(height: 16),
-        Container(
-          height: 50,
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          color: Colors.grey[300],
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "See more courses",
-                style: Theme.of(context).textTheme.titleMedium,
+        const SizedBox(height: 8),
+        GestureDetector(
+          onTap: () {
+            print("Hello");
+          },
+          child: Container(
+            height: 50,
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: ShapeDecoration(
+              color: Colors.grey[300],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
               ),
-              const Icon(Icons.arrow_forward),
-            ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "See more courses",
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const Icon(Icons.arrow_forward),
+              ],
+            ),
           ),
         ),
       ],
