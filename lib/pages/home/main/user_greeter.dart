@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter/gestures.dart";
 
 import "package:firebase_auth/firebase_auth.dart";
+import "package:cached_network_image/cached_network_image.dart";
 
 class UserGreeter extends StatelessWidget {
   final Function onClickLogin;
@@ -98,7 +99,7 @@ class UserGreeter extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(8)),
             image: DecorationImage(
-              image: NetworkImage(profilePhoto),
+              image: CachedNetworkImageProvider(profilePhoto),
               fit: BoxFit.cover,
             ),
           ),
