@@ -4,6 +4,11 @@ rules_version = "2";
 service firebase.storage {
   match /b/{bucket}/o {
 
+    // Allow public read access on assets folder
+    match /assets/{allPaths=**} {
+      allow read: if true;
+    }
+
     // Only authenticated users can read or write to the bucket
     match /users/{userId} {
       allow read, write: if request.auth.uid == userId;
