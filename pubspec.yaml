@@ -79,6 +79,7 @@ flutter:
     - assets/
     - assets/logo/
     - assets/pages/
+    - assets/pages/homepage/
     - assets/pages/onboarding/
     - assets/pages/onboarding/reset_password/
 

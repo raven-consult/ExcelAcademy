@@ -39,7 +39,16 @@ class OngoingCourse extends StatelessWidget {
               width: width,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white70,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.30),
+                      BlendMode.dstATop,
+                    ),
+                    image: const AssetImage(
+                      "assets/pages/homepage/ongoing_course_background.png",
+                    ),
+                  ),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 padding: const EdgeInsets.all(12),
