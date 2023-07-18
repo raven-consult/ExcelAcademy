@@ -78,7 +78,11 @@ class Main extends StatelessWidget {
               const SizedBox(height: 24),
               CourseProgramsList(),
               const SizedBox(height: 24),
-              const OngoingCourse(),
+              const OngoingCourse(
+                progress: 50,
+                courseName:
+                    "ICAN Public Sector Accounting and Finance (Revision)",
+              ),
               const SizedBox(height: 24),
               const PopularCourses(),
               const SizedBox(height: 24),

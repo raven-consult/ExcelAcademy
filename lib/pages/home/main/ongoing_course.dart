@@ -3,7 +3,14 @@ import "dart:math" as math;
 import "package:flutter/material.dart";
 
 class OngoingCourse extends StatelessWidget {
-  const OngoingCourse({super.key});
+  final int progress;
+  final String courseName;
+
+  const OngoingCourse({
+    super.key,
+    required this.progress,
+    required this.courseName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +19,7 @@ class OngoingCourse extends StatelessWidget {
       splashColor: Colors.blue,
       splashFactory: InkSplash.splashFactory,
       onTap: () {
-        print("Ongoing course");
+        print("Ongoing course tapped");
       },
       child: SizedBox(
         height: 175,
@@ -27,7 +34,7 @@ class OngoingCourse extends StatelessWidget {
                 angle: -math.pi * 0.025,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -61,7 +68,7 @@ class OngoingCourse extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Text(
-                      "ICAN Public Sector Accounting and Finance (Revision)",
+                      courseName,
                       style:
                           Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
@@ -74,23 +81,33 @@ class OngoingCourse extends StatelessWidget {
                           child: Stack(
                             children: [
                               Container(
-                                height: 4,
-                                width: MediaQuery.of(context).size.width - 3,
-                                color: Colors.blue,
+                                height: 6,
+                                width: MediaQuery.of(context).size.width - 131,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
                               ),
                               Container(
-                                height: 4,
-                                width: ((MediaQuery.of(context).size.width *
-                                            0.23) -
-                                        132)
-                                    .abs(),
-                                color: Colors.yellow,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                width:
+                                    ((MediaQuery.of(context).size.width - 132) *
+                                            progress /
+                                            100)
+                                        .abs(),
                               ),
                             ],
                           ),
                         ),
                         const SizedBox(width: 8),
-                        const Text("23% of 100%"),
+                        Text(
+                          "$progress% of 100%",
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
                       ],
                     ),
                     Column(
@@ -100,9 +117,17 @@ class OngoingCourse extends StatelessWidget {
                           children: [
                             Text(
                               "Continue learning",
-                              style: Theme.of(context).textTheme.titleMedium,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
-                            const Icon(Icons.chevron_right),
+                            const Icon(
+                              Icons.chevron_right,
+                              size: 24,
+                            ),
                           ],
                         )
                       ],
