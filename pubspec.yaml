@@ -44,6 +44,7 @@ dependencies:
   firebase_remote_config: ^4.2.3
   flutter_otp_text_field: ^1.1.1
   flutter_launcher_icons: ^0.13.1
+  avatar_stack: ^1.2.0
 
 dev_dependencies:
   flutter_test:
