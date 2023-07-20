@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 
-import "main/main.dart";
-
+import "layout.dart";
 import "package:mobile/pages/onboarding/onboarding.dart";
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
