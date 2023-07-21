@@ -1,10 +1,10 @@
 import "package:flutter/material.dart";
 
 import "search.dart";
-import "popular.dart";
 import "nav_cart.dart";
 import "ad_panel.dart";
 import "user_greeter.dart";
+import "courses_group.dart";
 import "ongoing_course.dart";
 import "course_programs_list.dart";
 
@@ -61,9 +61,17 @@ class _Explore extends State<Explore> with AutomaticKeepAliveClientMixin {
                   "ICAN Public Sector Accounting and Finance (Revision)",
             ),
             const SizedBox(height: 24),
-            const PopularCourses(),
-            const SizedBox(height: 24),
-            const PopularCourses(),
+            CoursesGroup(
+              title: "Popular Courses",
+              description: "Most popular courses",
+              courseItems: mockData(),
+            ),
+            const SizedBox(height: 8),
+            CoursesGroup(
+              title: "Latest Courses",
+              description: "Newly added courses",
+              courseItems: mockData().reversed.toList(),
+            ),
           ],
         ),
       ),
