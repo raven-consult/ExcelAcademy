@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "cart/cart.dart";
 import "explore/explore.dart";
 import "profile/profile.dart";
-import "category/category.dart";
+import "categories/categories.dart";
 import "my_learning/my_learning.dart";
 
 class Main extends StatefulWidget {
@@ -35,7 +35,7 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
           gotoRegister: widget.gotoRegister,
           gotoNotification: widget.gotoNotification,
         ),
-        const Category(),
+        const Categories(),
         const MyLearning(),
         const Cart(),
         const Profile(),
