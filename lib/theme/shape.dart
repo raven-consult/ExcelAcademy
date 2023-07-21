@@ -2,8 +2,12 @@ import "package:flutter/material.dart";
 
 import "color.dart";
 
-const appBarTheme = AppBarTheme(
+final appBarTheme = AppBarTheme(
+  elevation: 0,
   toolbarHeight: 70,
+  centerTitle: true,
+  backgroundColor: colorScheme.surface,
+  foregroundColor: colorScheme.onSurface,
 );
 
 final textButtonStyle = TextButtonThemeData(
