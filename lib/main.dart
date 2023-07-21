@@ -69,6 +69,14 @@ class ExcelAcademy extends StatelessWidget {
       ),
       child: MaterialApp(
         theme: theme,
+        builder: (context, child) {
+          return ScrollConfiguration(
+            behavior: const ScrollBehavior().copyWith(
+              overscroll: false,
+            ),
+            child: child!,
+          );
+        },
         darkTheme: darkTheme,
         title: "Excel Academy",
         onGenerateRoute: _onGenerateRoute,
