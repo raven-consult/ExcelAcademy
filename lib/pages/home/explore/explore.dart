@@ -4,9 +4,10 @@ import "search.dart";
 import "nav_cart.dart";
 import "ad_panel.dart";
 import "user_greeter.dart";
-import "courses_group.dart";
 import "ongoing_course.dart";
 import "course_programs_list.dart";
+
+import "../components/courses_group.dart";
 
 class Explore extends StatefulWidget {
   final Function gotoCart;
@@ -53,7 +54,7 @@ class _Explore extends State<Explore> with AutomaticKeepAliveClientMixin {
             const SizedBox(height: 24),
             const AdPanel(),
             const SizedBox(height: 24),
-            CourseProgramsList(),
+            const CourseProgramsList(),
             const SizedBox(height: 24),
             const OngoingCourse(
               progress: 50,
