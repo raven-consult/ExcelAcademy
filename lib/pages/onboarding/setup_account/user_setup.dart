@@ -132,7 +132,7 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
         ),
         TextFormField(
           decoration: const InputDecoration(
-            hintText: "Fullname",
+            hintText: "Full name",
             border: OutlineInputBorder(),
           ),
           validator: (value) {
@@ -309,7 +309,7 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
         _dropDownFormField(),
         const SizedBox(height: 8),
         TextFormField(
-          obscureText: !_showPassword,
+          obscureText: _showPassword,
           decoration: InputDecoration(
             hintText: "Password",
             border: const OutlineInputBorder(),
