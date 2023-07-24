@@ -5,8 +5,10 @@ import "package:flutter/services.dart";
 import "package:flutter/foundation.dart";
 
 import "package:firebase_core/firebase_core.dart";
+import "package:firebase_auth/firebase_auth.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_crashlytics/firebase_crashlytics.dart";
+import "package:flutter_native_splash/flutter_native_splash.dart";
 
 import "theme/theme.dart";
 import "theme/color.dart";
@@ -17,8 +19,14 @@ import "pages/cart/cart.dart";
 import "pages/onboarding/onboarding.dart";
 import "pages/notifications/notifications.dart";
 
+Future<bool> isUserSignedIn() async {
+  var user = await FirebaseAuth.instance.authStateChanges().first;
+  return user != null;
+}
+
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -51,11 +59,23 @@ Future<void> main() async {
   FirebaseFirestore.instance.settings = FirebaseFirestore.instance.settings
       .copyWith(ignoreUndefinedProperties: false);
 
-  runApp(const ExcelAcademy());
+  String initialRoute = "/onboarding";
+  var isSignedIn = await isUserSignedIn();
+  if (isSignedIn) {
+    initialRoute = "/home";
+  }
+
+  FlutterNativeSplash.remove();
+  runApp(ExcelAcademy(initialRoute: initialRoute));
 }
 
 class ExcelAcademy extends StatelessWidget {
-  const ExcelAcademy({super.key});
+  final String initialRoute;
+
+  const ExcelAcademy({
+    super.key,
+    this.initialRoute = "/onboarding",
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +100,6 @@ class ExcelAcademy extends StatelessWidget {
         darkTheme: darkTheme,
         title: "Excel Academy",
         onGenerateRoute: _onGenerateRoute,
-        home: const Onboarding(subRoute: "/"),
       ),
     );
   }
