@@ -59,13 +59,12 @@ Future<void> main() async {
   FirebaseFirestore.instance.settings = FirebaseFirestore.instance.settings
       .copyWith(ignoreUndefinedProperties: false);
 
-  String initialRoute = "/onboarding";
+  String initialRoute = "onboarding";
   var isSignedIn = await isUserSignedIn();
   if (isSignedIn) {
-    initialRoute = "/home";
+    initialRoute = "home";
   }
 
-  FlutterNativeSplash.remove();
   runApp(ExcelAcademy(initialRoute: initialRoute));
 }
 
@@ -74,11 +73,12 @@ class ExcelAcademy extends StatelessWidget {
 
   const ExcelAcademy({
     super.key,
-    this.initialRoute = "/onboarding",
+    this.initialRoute = "onboarding",
   });
 
   @override
   Widget build(BuildContext context) {
+    FlutterNativeSplash.remove();
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         systemNavigationBarColor: colorScheme.surface,
@@ -100,6 +100,7 @@ class ExcelAcademy extends StatelessWidget {
         darkTheme: darkTheme,
         title: "Excel Academy",
         onGenerateRoute: _onGenerateRoute,
+        initialRoute: initialRoute,
       ),
     );
   }
@@ -108,10 +109,10 @@ class ExcelAcademy extends StatelessWidget {
     late Widget page;
 
     switch (settings.name) {
-      case "/home":
+      case "home":
         page = const Home(subRoute: "/");
         break;
-      case "/onboarding":
+      case "onboarding":
         if (settings.arguments != null) {
           var options = settings.arguments as OnboardingOptions;
           page = Onboarding(subRoute: options.initialRoute);
@@ -119,10 +120,10 @@ class ExcelAcademy extends StatelessWidget {
           page = const Onboarding(subRoute: "/");
         }
         break;
-      case "/cart":
+      case "cart":
         page = const Cart();
         break;
-      case "/notifications":
+      case "notifications":
         page = const NotificationsPage();
         break;
     }

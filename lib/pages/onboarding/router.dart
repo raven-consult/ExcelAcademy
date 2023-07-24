@@ -19,7 +19,7 @@ class OnboardingRouter extends StatefulWidget {
 
 class _OnboardingRouter extends State<OnboardingRouter> {
   void _tapOut() {
-    Navigator.of(context).pushReplacementNamed("/home");
+    Navigator.of(context).pushReplacementNamed("home");
   }
 
   Route _onGenerateRoute(RouteSettings settings) {
