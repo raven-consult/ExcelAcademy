@@ -29,6 +29,7 @@ dependencies:
   local_auth: ^2.1.6
   file_picker: ^5.3.1
   google_fonts: ^4.0.4
+  avatar_stack: ^1.2.0
   firebase_auth: ^4.6.3
   firebase_core: ^2.14.0
   google_sign_in: ^6.1.4
@@ -44,7 +45,7 @@ dependencies:
   firebase_remote_config: ^4.2.3
   flutter_otp_text_field: ^1.1.1
   flutter_launcher_icons: ^0.13.1
-  avatar_stack: ^1.2.0
+  flutter_native_splash: ^2.2.19
   circular_chart_flutter: ^0.0.2
 
 dev_dependencies:
@@ -84,6 +85,10 @@ flutter:
     - assets/pages/homepage/
     - assets/pages/onboarding/
     - assets/pages/onboarding/reset_password/
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: "assets/logo/splash_screen.png"
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
