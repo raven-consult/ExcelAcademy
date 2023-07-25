@@ -1,14 +1,14 @@
 import "package:flutter/material.dart";
 import "package:circular_chart_flutter/circular_chart_flutter.dart";
 
-class MyLearning extends StatefulWidget {
-  const MyLearning({super.key});
+class Library extends StatefulWidget {
+  const Library({super.key});
 
   @override
-  State<MyLearning> createState() => _MyLearning();
+  State<Library> createState() => _Library();
 }
 
-class _MyLearning extends State<MyLearning> with TickerProviderStateMixin {
+class _Library extends State<Library> with TickerProviderStateMixin {
   late TabController _tabController;
 
   final List<GlobalKey<AnimatedCircularChartState>> _chartKey = [];
@@ -39,7 +39,7 @@ class _MyLearning extends State<MyLearning> with TickerProviderStateMixin {
           },
         ),
       ],
-      title: const Text("My Learning"),
+      title: const Text("Library"),
     );
   }
 

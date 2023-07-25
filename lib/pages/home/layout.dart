@@ -3,8 +3,8 @@ import "package:flutter/material.dart";
 import "cart/cart.dart";
 import "explore/explore.dart";
 import "profile/profile.dart";
+import "library/library.dart";
 import "categories/categories.dart";
-import "my_learning/my_learning.dart";
 
 class Main extends StatefulWidget {
   final Function gotoCart;
@@ -36,7 +36,7 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
           gotoNotification: widget.gotoNotification,
         ),
         const Categories(),
-        const MyLearning(),
+        const Library(),
         const Cart(),
         const Profile(),
       ];
@@ -73,7 +73,7 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
             icon: Icon(Icons.category),
           ),
           BottomNavigationBarItem(
-            label: "My Learning",
+            label: "Library",
             icon: Icon(Icons.dashboard),
           ),
           BottomNavigationBarItem(
