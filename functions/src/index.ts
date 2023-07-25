@@ -1,8 +1,7 @@
 import * as admin from "firebase-admin";
 
-
 admin.initializeApp();
 
-export const auth = import("./services/auth");
-export const user = import("./services/user");
-export const utils = import("./services/utils");
+export * as auth from "./services/auth";
+export * as user from "./services/user";
+export * as utils from "./services/utils";
