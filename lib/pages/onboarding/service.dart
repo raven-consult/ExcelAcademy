@@ -79,7 +79,7 @@ class OnboardingService {
 
   Future resetPassword(String emailAddress, {bool resend = false}) async {
     try {
-      var callable = _firebaseFunctions.httpsCallable("sendPasswordResetEmail");
+      var callable = _firebaseFunctions.httpsCallable("auth-sendPasswordResetEmail");
       await callable.call(<String, dynamic>{
         "email": emailAddress,
         "resend": resend,
@@ -91,7 +91,7 @@ class OnboardingService {
 
   Future<bool> verifyOTP(String email, String code) async {
     try {
-      var callable = _firebaseFunctions.httpsCallable("verifyResetOTP");
+      var callable = _firebaseFunctions.httpsCallable("auth-verifyResetOTP");
       var res = await callable.call(<String, String>{
         "code": code,
         "email": email,
@@ -105,7 +105,7 @@ class OnboardingService {
 
   Future confirmResetPassword(
       String newPassword, String emailAddress, String resetCode) async {
-    var callable = _firebaseFunctions.httpsCallable("confirmResetPassword");
+    var callable = _firebaseFunctions.httpsCallable("auth-confirmResetPassword");
     try {
       await callable.call(<String, String>{
         "code": resetCode,
