@@ -3,6 +3,10 @@ name: Master Deployment
 on:
   release:
     types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   android_build:
@@ -85,7 +89,10 @@ jobs:
         working-directory: functions
 
       - name: Firebase deploy functions
-        run: firebase deploy --only functions
+        run: |
+          firebase deploy \
+              --only functions \
+              --project=excel-academy-online
 
   configurations_deploy:
     name: Firebase configurations deploy
@@ -116,7 +123,10 @@ jobs:
         working-directory: functions
 
       - name: Firebase deploy functions
-        run: firebase deploy --only database,firestore,remoteconfig,storage
+        run: |
+          firebase deploy \
+              --only database,firestore,remoteconfig,storage \
+              --project=excel-academy-online
 
   deploy:
     needs: android_build
@@ -164,7 +174,7 @@ jobs:
       - name: Deploy Android app to Firebase app distribution
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
-              -- release-notes "$MESSAGE" \
+              --release-notes "$MESSAGE" \
               --app 1:1027112230279:android:7d45ccd3b9d0f816f9c722 \
               --groups "admin, trusted_testers"
         env:
