@@ -51,10 +51,10 @@ jobs:
         run: tar -cvf artifacts.tar build/app/outputs/flutter-apk/*.apk
 
       - name: Upload Android apk
-        uses: actions/upload-artifact@v3
+        uses: softprops/action-gh-release@v1
         with:
-          name: artifacts
-          path: artifacts.tar
+          files: artifacts.tar
+
 
   functions_build:
     name: Functions build
@@ -141,9 +141,11 @@ jobs:
             };
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v3
+        uses: dsaltares/fetch-gh-release-asset@master
         with:
-          name: artifacts
+          file: artifacts.tar
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: ${{ steps.get_release_info.outputs.tag_name }}
 
       - name: Untar Artifacts
         run: tar -xvf artifacts.tar
