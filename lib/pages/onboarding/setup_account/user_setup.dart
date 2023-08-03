@@ -1,15 +1,11 @@
-// ignore_for_file: unused_field
-
 import "package:flutter/material.dart";
 import "package:flutter/gestures.dart";
 import "package:flutter/scheduler.dart";
 
-import "package:firebase_auth/firebase_auth.dart";
 import "package:firebase_crashlytics/firebase_crashlytics.dart";
 
 import "../utils.dart";
 import "../service.dart";
-import "package:mobile/services/user.dart";
 
 class UserSetup extends StatefulWidget {
   final Function prev;
@@ -28,40 +24,23 @@ class UserSetup extends StatefulWidget {
 }
 
 class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
-  int _currentStep = 0;
-  final _totalSteps = 3 - 1;
-  bool _showPassword = false;
-  final Map<String, int> _showButton = {};
-
   late TabController _controller;
   final formKey = GlobalKey<FormState>();
   final _loginService = OnboardingService();
-  final _dateController = TextEditingController();
-
-  final FirebaseAuth _fireaseAuth = FirebaseAuth.instance;
 
   String _password = "";
   String _fullName = "";
-  String _username = "";
+  String _phoneNumber = "";
   String _emailAddress = "";
-  Gender _gender = Gender.male;
-  DateTime _dateOfBirth = DateTime.now();
 
-  final _stepsRequirements = [
-    ["fullname", "email"],
-    ["username", "dateOfBirth"],
-    ["gender", "password"],
-  ];
+  bool _showPassword = false;
+  bool _showConfirmPassword = false;
+  final Map<String, int> _showButton = {};
 
   @override
   void initState() {
     super.initState();
     _controller = TabController(length: 3, vsync: this);
-    _controller.addListener(() {
-      print(_currentStep);
-    });
-    _showButton["email"] = 0;
-    _showButton["fullname"] = 0;
   }
 
   @override
@@ -70,8 +49,12 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
     _controller.dispose();
   }
 
-  Future _loginWithoutPassword() async {
-    widget.goHome();
+  Future<void> _onSignup() async {
+    await _loginService.signUpWithPassword(
+      _fullName,
+      _emailAddress,
+      _password,
+    );
   }
 
   void showErrorDialog() {
@@ -85,316 +68,7 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
     );
   }
 
-  Future _goToNextSection() async {
-    setState(() {
-      _showButton["loading"] = 1;
-    });
-    try {
-      var res = await _fireaseAuth.signInWithEmailAndPassword(
-        email: _emailAddress,
-        password: _password,
-      );
-      await res.user!.updateDisplayName(_fullName);
-      var userService = UserService(res.user!.uid);
-      await userService.updateUserData(
-        gender: _gender,
-        username: _username,
-        dateOfBirth: _dateOfBirth,
-      );
-      widget.next();
-    } catch (e) {
-      showErrorDialog();
-    } finally {
-      setState(() {
-        _showButton.remove("loading");
-      });
-    }
-  }
-
-  List<Widget> _getStep(int step) {
-    return [
-      [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text("What’s your email", style: TextStyle(fontSize: 40)),
-              SizedBox(height: 4),
-              Text(
-                "Let’s begin by saving your email for next time",
-                style: TextStyle(fontSize: 20),
-              ),
-            ],
-          ),
-        ),
-        TextFormField(
-          decoration: const InputDecoration(
-            hintText: "Full name",
-            border: OutlineInputBorder(),
-          ),
-          validator: (value) {
-            if (value == null || value == "") {
-              return null;
-            }
-            if (!StringValidator.isLongerThan(6, value)) {
-              SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                setState(() {
-                  _showButton["fullname"] = 0;
-                });
-              });
-              return "Choose longer full name";
-            } else {
-              if (_showButton["fullname"] != null) {
-                SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                  setState(() {
-                    _showButton.remove("fullname");
-                  });
-                });
-              }
-              return null;
-            }
-          },
-          onSaved: (value) {
-            setState(() {
-              _fullName = value ?? "";
-            });
-          },
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          decoration: const InputDecoration(
-            hintText: "Email Address",
-            border: OutlineInputBorder(),
-          ),
-          validator: (value) {
-            if (value == null || value == "") {
-              return null;
-            }
-            if (!StringValidator.isValidEmail(value)) {
-              SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                setState(() {
-                  _showButton["email"] = 0;
-                });
-              });
-              return "Invalid Email";
-            } else {
-              if (_showButton["email"] != null) {
-                SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                  setState(() {
-                    _showButton.remove("email");
-                  });
-                });
-              }
-              return null;
-            }
-          },
-          onChanged: (value) {
-            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-              setState(() {
-                _emailAddress = value;
-              });
-            });
-          },
-        ),
-      ],
-      [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text("We keep it secure", style: TextStyle(fontSize: 40)),
-              SizedBox(height: 4),
-              Text(
-                "We’re super-glad to see your progress so far. Your data is save and secure with us",
-                style: TextStyle(fontSize: 20),
-              ),
-            ],
-          ),
-        ),
-        TextFormField(
-          decoration: const InputDecoration(
-            hintText: "Username",
-            border: OutlineInputBorder(),
-          ),
-          onChanged: (value) {
-            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-              setState(() {
-                _username = value;
-              });
-            });
-          },
-          validator: (value) {
-            if (value == null || !StringValidator.isLongerThan(6, value)) {
-              SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                setState(() {
-                  _showButton["username"] = 0;
-                });
-              });
-              return "Choose longer username";
-            } else {
-              if (_showButton["username"] != null) {
-                SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                  setState(() {
-                    _showButton.remove("username");
-                  });
-                });
-              }
-              return null;
-            }
-          },
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          readOnly: true,
-          controller: _dateController,
-          decoration: InputDecoration(
-            suffixIcon: IconButton(
-              onPressed: () async {
-                var date = await showDatePicker(
-                  context: context,
-                  initialDate: _dateOfBirth,
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime(2100),
-                );
-
-                if (date != null) {
-                  setState(() {});
-                  SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                    setState(() {
-                      _dateOfBirth = date;
-                      _dateController.text =
-                          "${date.day}/${date.month}/${date.year}";
-                      _showButton.remove("dateOfBirth");
-                    });
-                  });
-                }
-              },
-              icon: const Icon(Icons.event),
-            ),
-            hintText: "Date of Birth",
-            border: const OutlineInputBorder(),
-          ),
-          onChanged: (value) {
-            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-              setState(() {
-                _username = value;
-              });
-            });
-          },
-        ),
-      ],
-      [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text("Getting you ready!", style: TextStyle(fontSize: 40)),
-              SizedBox(height: 4),
-              Text(
-                "We are fired-up, we can’t wait for your to finally join us",
-                style: TextStyle(fontSize: 20),
-              ),
-            ],
-          ),
-        ),
-        _dropDownFormField(),
-        const SizedBox(height: 8),
-        TextFormField(
-          obscureText: _showPassword,
-          decoration: InputDecoration(
-            hintText: "Password",
-            border: const OutlineInputBorder(),
-            suffixIcon: IconButton(
-              onPressed: () {
-                setState(() {
-                  _showPassword = !_showPassword;
-                });
-              },
-              icon: !_showPassword
-                  ? const Icon(Icons.visibility_off)
-                  : const Icon(Icons.visibility),
-            ),
-          ),
-          validator: (value) {
-            if (value == null || value == "") {
-              return null;
-            }
-            if (!StringValidator.isLongerThan(8, value)) {
-              SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                setState(() {
-                  _showButton["password"] = 0;
-                });
-              });
-              return "Use a password longer than 8 characters";
-            } else {
-              if (_showButton["password"] != null) {
-                SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                  setState(() {
-                    _showButton.remove("password");
-                  });
-                });
-              }
-              return null;
-            }
-          },
-          onChanged: (value) {
-            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-              setState(() {
-                _password = value;
-              });
-            });
-          },
-        ),
-      ]
-    ][step];
-  }
-
-  Widget _dropDownFormField() {
-    return DropdownButtonFormField(
-      decoration: InputDecoration(
-        errorStyle: const TextStyle(color: Colors.redAccent, fontSize: 16.0),
-        hintText: "Select your Gender",
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-      ),
-      items: ["Male", "Female"].map((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-      onChanged: (newValue) {
-        if (newValue != null) {
-          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            setState(() {
-              if (newValue == "Male") {
-                _gender = Gender.male;
-              } else {
-                _gender = Gender.female;
-              }
-              _showButton.remove("gender");
-            });
-          });
-        }
-      },
-    );
-  }
-
   PreferredSizeWidget _appBar() {
-    var stepText = _totalSteps - _currentStep == 0
-        ? "THAT'S A WRAP"
-        : "${_totalSteps - _currentStep} MORE STEPS";
-
     return AppBar(
       centerTitle: true,
       elevation: 0,
@@ -409,183 +83,334 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
           FirebaseCrashlytics.instance.log("Back button pressed");
         },
       ),
-      title: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "CREATE AN ACCOUNT",
-            style: TextStyle(
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            stepText,
-            style: TextStyle(
-              fontSize: 14,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _stepsBar(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: const BorderRadius.horizontal(
-          left: Radius.circular(10),
-          right: Radius.circular(10),
+      title: Text(
+        "CREATE AN ACCOUNT",
+        style: TextStyle(
+          fontSize: 16,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
-      height: 8,
-      child: Stack(
-        children: [
-          Positioned(
-            height: 8,
-            child: AnimatedContainer(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                borderRadius: const BorderRadius.horizontal(
-                  left: Radius.circular(10),
-                  right: Radius.circular(10),
-                ),
-              ),
-              curve: Curves.easeOut,
-              duration: const Duration(milliseconds: 600),
-              width: (1 + _currentStep) *
-                  ((MediaQuery.of(context).size.width - 20) / 3),
-            ),
+    );
+  }
+
+  Widget _privacyPolicy() {
+    var linkStyle = TextStyle(color: Theme.of(context).colorScheme.primary);
+    const defaultStyle = TextStyle(color: Colors.grey, fontSize: 16.0);
+
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        style: defaultStyle,
+        children: <TextSpan>[
+          const TextSpan(
+            text: "By Creating an account, you accept Excel Academy",
+          ),
+          TextSpan(
+            text: " Terms of Use ",
+            style: linkStyle,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                print("Terms of Use");
+              },
+          ),
+          const TextSpan(text: "and "),
+          TextSpan(
+            text: "Privacy Policy",
+            style: linkStyle,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                print("Privacy Policy");
+              },
           ),
         ],
       ),
     );
   }
 
-  Widget _scaffold({required Widget child}) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints viewportConstraints) {
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: viewportConstraints.maxHeight,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: child,
-            ),
-          ),
-        );
+  Widget _phoneNumberField() {
+    return TextFormField(
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.phone,
+      decoration: const InputDecoration(
+        hintText: "Phone Number",
+        border: OutlineInputBorder(),
+      ),
+      onChanged: (value) {
+        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+          setState(() {
+            _phoneNumber = value;
+          });
+        });
+      },
+      validator: (value) {
+        if (value == null || value == "") {
+          return null;
+        } else if (value.length != 11) {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            setState(() {
+              _showButton["phoneNumber"] = 0;
+            });
+          });
+          return "Phone number must be eleven digits long";
+        } else {
+          if (_showButton["phoneNumber"] != null) {
+            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+              setState(() {
+                _showButton.remove("phoneNumber");
+              });
+            });
+          }
+          return null;
+        }
       },
     );
   }
 
+  Widget _fullNameField() {
+    return TextFormField(
+      textInputAction: TextInputAction.next,
+      textCapitalization: TextCapitalization.words,
+      decoration: const InputDecoration(
+        hintText: "Full name",
+        border: OutlineInputBorder(),
+      ),
+      validator: (value) {
+        if (value == null || value == "") {
+          return null;
+        }
+        if (!StringValidator.isLongerThan(6, value)) {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            setState(() {
+              _showButton["fullname"] = 0;
+            });
+          });
+          return "Choose longer full name";
+        } else {
+          if (_showButton["fullname"] != null) {
+            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+              setState(() {
+                _showButton.remove("fullname");
+              });
+            });
+          }
+          return null;
+        }
+      },
+      onChanged: (value) {
+        setState(() {
+          _fullName = value;
+        });
+      },
+    );
+  }
+
+  Widget _emailAddressField() {
+    return TextFormField(
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.emailAddress,
+      decoration: const InputDecoration(
+        hintText: "Email Address",
+        border: OutlineInputBorder(),
+      ),
+      validator: (value) {
+        if (value == null || value == "") {
+          return null;
+        }
+        if (!StringValidator.isValidEmail(value)) {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            setState(() {
+              _showButton["email"] = 0;
+            });
+          });
+          return "Invalid Email";
+        } else {
+          if (_showButton["email"] != null) {
+            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+              setState(() {
+                _showButton.remove("email");
+              });
+            });
+          }
+          return null;
+        }
+      },
+      onChanged: (value) {
+        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+          setState(() {
+            _emailAddress = value;
+          });
+        });
+      },
+    );
+  }
+
+  Widget _confirmPasswordField() {
+    return TextFormField(
+      textInputAction: TextInputAction.done,
+      obscureText: !_showConfirmPassword,
+      decoration: InputDecoration(
+        hintText: "Confirm Password",
+        border: const OutlineInputBorder(),
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              _showConfirmPassword = !_showConfirmPassword;
+            });
+          },
+          icon: !_showConfirmPassword
+              ? const Icon(Icons.visibility_off)
+              : const Icon(Icons.visibility),
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value == "") {
+          return null;
+        } else if (value != _password) {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            setState(() {
+              _showButton["confirmPassword"] = 0;
+            });
+          });
+          return "Password does not match";
+        } else {
+          if (_showButton["confirmPassword"] != null) {
+            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+              setState(() {
+                _showButton.remove("confirmPassword");
+              });
+            });
+          }
+          return null;
+        }
+      },
+    );
+  }
+
+  Widget _passwordField() {
+    return TextFormField(
+      textInputAction: TextInputAction.next,
+      obscureText: !_showPassword,
+      decoration: InputDecoration(
+        hintText: "Password",
+        border: const OutlineInputBorder(),
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              _showPassword = !_showPassword;
+            });
+          },
+          icon: !_showPassword
+              ? const Icon(Icons.visibility_off)
+              : const Icon(Icons.visibility),
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value == "") {
+          return null;
+        }
+        if (!StringValidator.isLongerThan(8, value)) {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            setState(() {
+              _showButton["password"] = 0;
+            });
+          });
+          return "Use a password longer than 8 characters";
+        } else {
+          if (_showButton["password"] != null) {
+            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+              setState(() {
+                _showButton.remove("password");
+              });
+            });
+          }
+          return null;
+        }
+      },
+      onChanged: (value) {
+        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+          setState(() {
+            _password = value;
+          });
+        });
+      },
+    );
+  }
+
+  bool _canShowButton() => _showButton.values.isEmpty;
+
   @override
   Widget build(BuildContext context) {
-    var isLast = _totalSteps == _currentStep;
-    var linkStyle = TextStyle(color: Theme.of(context).colorScheme.primary);
-    const defaultStyle = TextStyle(color: Colors.grey, fontSize: 16.0);
-
     return Scaffold(
       appBar: _appBar(),
-      body: _scaffold(
-        child: Stack(
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _stepsBar(context),
-                SizedBox(
-                  height: 2.7 * (MediaQuery.of(context).size.height / 8),
-                  child: Form(
-                    key: formKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    child: TabBarView(
-                      controller: _controller,
-                      children: [
-                        Column(children: _getStep(0)),
-                        Column(children: _getStep(1)),
-                        Column(children: _getStep(2)),
-                      ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "What’s your email",
+                      style: TextStyle(fontSize: 40),
                     ),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed:
-                      _showButton["loading"] == 1 || _showButton.isNotEmpty
-                          ? null
-                          : () async {
-                              formKey.currentState?.validate();
-                              if (isLast) {
-                                await _goToNextSection();
-                              } else {
-                                // Check the _stepsRequirements and add the errors to be fixed
-                                _controller.animateTo(_currentStep + 1);
-                                setState(() {
-                                  for (var item
-                                      in _stepsRequirements[_currentStep + 1]) {
-                                    _showButton[item] = 1;
-                                  }
-                                  _currentStep += 1;
-                                });
-                              }
-                            },
-                  child: isLast
-                      ? const Text("Create account")
-                      : const Text("Continue"),
-                ),
-              ],
-            ),
-            Positioned(
-              bottom: 70,
-              width: MediaQuery.of(context).size.width - 20,
-              child: RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: defaultStyle,
-                  children: <TextSpan>[
-                    const TextSpan(
-                      text: "By Creating an account, you accept Excel Academy",
-                    ),
-                    TextSpan(
-                      text: " Terms of Use ",
-                      style: linkStyle,
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          print("Terms of Use");
-                        },
-                    ),
-                    const TextSpan(text: "and "),
-                    TextSpan(
-                      text: "Privacy Policy",
-                      style: linkStyle,
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          print("Privacy Policy");
-                        },
+                    SizedBox(height: 4),
+                    Text(
+                      "Let’s begin by saving your email for next time",
+                      style: TextStyle(fontSize: 20),
                     ),
                   ],
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 200,
-              width: MediaQuery.of(context).size.width - 25,
-              child: OutlinedButton(
-                onPressed: () {
-                  _loginWithoutPassword();
-                },
-                child: const Text("Login without password"),
+              const SizedBox(height: 32),
+              Form(
+                key: formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                  children: [
+                    _fullNameField(),
+                    const SizedBox(height: 8),
+                    _emailAddressField(),
+                    const SizedBox(height: 8),
+                    _phoneNumberField(),
+                    const SizedBox(height: 8),
+                    _passwordField(),
+                    const SizedBox(height: 8),
+                    _confirmPasswordField(),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _canShowButton()
+                          ? () async {
+                              try {
+                                setState(() {
+                                  _showButton["loading"] = 1;
+                                });
+                                await _onSignup();
+                                widget.next();
+                              } catch (e) {
+                                print("An error occured");
+                              } finally {
+                                setState(() {
+                                  _showButton.remove("loading");
+                                });
+                              }
+                            }
+                          : null,
+                      child: const Text("Continue"),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 32),
+              _privacyPolicy(),
+            ],
+          ),
         ),
       ),
     );
+    // child: Column(children: _getStep(0)),
   }
 }

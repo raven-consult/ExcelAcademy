@@ -28,12 +28,17 @@ class OnboardingService {
   final _fireaseAuth = FirebaseAuth.instance;
   final _firebaseFunctions = FirebaseFunctions.instance;
 
-  Future signUpWithPassword(String email, String password) async {
+  Future signUpWithPassword(
+    String displayName,
+    String email,
+    String password,
+  ) async {
     try {
-      await _fireaseAuth.createUserWithEmailAndPassword(
+      var res = await _fireaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      await res.user?.updateDisplayName(displayName);
     } on FirebaseAuthException catch (e) {
       if (e.code == "weak-password") {
         throw "The password provided is too weak.";
