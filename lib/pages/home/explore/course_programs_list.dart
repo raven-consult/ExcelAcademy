@@ -1,9 +1,27 @@
 import "package:flutter/material.dart";
 
+import "package:mobile/components/shimmer.dart";
+import "package:mobile/services/available_programs.dart";
+
 import '../components/course_program_item.dart';
 
-class CourseProgramsList extends StatelessWidget {
+class CourseProgramsList extends StatefulWidget {
   const CourseProgramsList({super.key});
+
+  @override
+  State<CourseProgramsList> createState() => _CourseProgramsList();
+}
+
+class _CourseProgramsList extends State<CourseProgramsList> {
+  final ProgramsService _programsService = ProgramsService();
+
+  late Future<List<CourseProgramItemData>> _programs;
+
+  @override
+  void initState() {
+    super.initState();
+    _programs = _programsService.getAllPrograms();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,25 +43,60 @@ class CourseProgramsList extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        GridView.count(
-          shrinkWrap: true,
-          crossAxisCount: 2,
-          childAspectRatio: 0.7,
-          physics: const NeverScrollableScrollPhysics(),
-          children: sampleCoursePrograms.map((item) {
-            return InkWell(
-              onTap: () {
-                print("Tapped ${item.fullName}");
-              },
-              child: Container(
-                margin: const EdgeInsets.symmetric(
-                  vertical: 6,
-                  horizontal: 6,
+        FutureBuilder(
+          future: _programs,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return GridView.count(
+                shrinkWrap: true,
+                crossAxisCount: 2,
+                childAspectRatio: 0.7,
+                physics: const NeverScrollableScrollPhysics(),
+                children: List.generate(
+                  6,
+                  (index) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 6,
+                        horizontal: 6,
+                      ),
+                      child: ShimmerWidget.rectangular(),
+                    );
+                  },
                 ),
-                child: CourseProgramItem(item: item),
-              ),
-            );
-          }).toList(),
+              );
+            } else if (snapshot.hasError) {
+              return const Center(
+                child: Text("Error fetching data"),
+              );
+            } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text("No data found"),
+              );
+            } else {
+              var snapshotData = snapshot.data!;
+              return GridView.count(
+                shrinkWrap: true,
+                crossAxisCount: 2,
+                childAspectRatio: 0.7,
+                physics: const NeverScrollableScrollPhysics(),
+                children: snapshotData.map((item) {
+                  return InkWell(
+                    onTap: () {
+                      print("Tapped ${item.fullName}");
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 6,
+                        horizontal: 6,
+                      ),
+                      child: CourseProgramItem(item: item),
+                    ),
+                  );
+                }).toList(),
+              );
+            }
+          },
         ),
         const SizedBox(height: 8),
         GestureDetector(
