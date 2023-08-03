@@ -1,6 +1,9 @@
 import "package:flutter/material.dart";
 import "package:circular_chart_flutter/circular_chart_flutter.dart";
 
+import "package:mobile/components/shimmer.dart";
+import "package:mobile/services/user_library.dart";
+
 class Library extends StatefulWidget {
   const Library({super.key});
 
@@ -70,9 +73,124 @@ class _Library extends State<Library> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildCourseItem() {
+  Widget _buildLoadingCourseItem() {
     var key = GlobalKey<AnimatedCircularChartState>();
-    _chartKey.add(GlobalKey<AnimatedCircularChartState>());
+    _chartKey.add(key);
+    return Container(
+      height: 125,
+      padding: const EdgeInsets.symmetric(
+        vertical: 8,
+      ),
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(
+            color: Colors.grey.shade300,
+            width: 1.5,
+          ),
+        ),
+        color: Colors.white,
+      ),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 4,
+        vertical: 4,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+              child: ShimmerWidget.rectangular(
+                height: 100,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: [
+                    ShimmerWidget.rectangular(
+                      height: 20,
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    ShimmerWidget.rectangular(
+                      height: 20,
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      flex: 4,
+                      child: InkWell(
+                        onTap: () {
+                          print("Retake Exam");
+                        },
+                        child: Container(
+                          height: 35,
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          child: ShimmerWidget.rectangular(
+                            height: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Spacer(flex: 1),
+                    Flexible(
+                      flex: 5,
+                      child: InkWell(
+                        onTap: () {
+                          print("Start Challenge");
+                        },
+                        child: Container(
+                          height: 35,
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          child: ShimmerWidget.rectangular(
+                            height: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const Expanded(
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+              child: ShimmerWidget.circular(
+                height: 70,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCourseItem(
+    UserCourse userCourse,
+  ) {
+    var course = userCourse.course;
+    var key = GlobalKey<AnimatedCircularChartState>();
+    _chartKey.add(key);
     return Container(
       height: 125,
       padding: const EdgeInsets.symmetric(
@@ -108,11 +226,12 @@ class _Library extends State<Library> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Strategic Financial Management",
+                  course.title,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 Text(
-                  "2hrs 30mins",
+                  "${course.duration.inHours.toString()} hrs "
+                  "${(course.duration.inMinutes % 60).toString()} mins",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Row(
@@ -175,6 +294,7 @@ class _Library extends State<Library> with TickerProviderStateMixin {
           Expanded(
             flex: 1,
             child: AnimatedCircularChart(
+              key: key,
               size: const Size(80, 80),
               initialChartData: [
                 CircularStackEntry(
@@ -264,71 +384,85 @@ class _Library extends State<Library> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildLayout() {
+  Widget _buildTabBarLayout(Future<List<UserCourse>> itemsFuture) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+      ),
+      child: FutureBuilder(
+        future: itemsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return ListView.separated(
+              itemCount: 10,
+              separatorBuilder: (context, index) {
+                return const SizedBox(
+                  height: 4,
+                );
+              },
+              itemBuilder: (context, index) {
+                return _buildLoadingCourseItem();
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+            return Center(
+              child: Text(
+                "No Data Found",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            );
+          } else {
+            return ListView.separated(
+              itemCount: snapshot.data!.length,
+              separatorBuilder: (context, index) {
+                return const SizedBox(
+                  height: 4,
+                );
+              },
+              itemBuilder: (context, index) {
+                return _buildCourseItem(snapshot.data![index]);
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildLayout(
+    Future<List<UserCourse>> ongoingCourse,
+    Future<List<UserCourse>> completedCourse,
+    Future<List<UserCourse>> bookmarkedCourse,
+  ) {
     return TabBarView(
       controller: _tabController,
       children: [
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-          ),
-          child: ListView.separated(
-            itemCount: 10,
-            separatorBuilder: (context, index) {
-              return const SizedBox(
-                height: 4,
-              );
-            },
-            itemBuilder: (context, index) {
-              return _buildCourseItem();
-            },
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-          ),
-          child: ListView.separated(
-            itemCount: 10,
-            separatorBuilder: (context, index) {
-              return const SizedBox(
-                height: 4,
-              );
-            },
-            itemBuilder: (context, index) {
-              return _buildCourseItem();
-            },
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-          ),
-          child: ListView.separated(
-            itemCount: 10,
-            separatorBuilder: (context, index) {
-              return const SizedBox(
-                height: 4,
-              );
-            },
-            itemBuilder: (context, index) {
-              return _buildBookmarkedCourseItem();
-            },
-          ),
-        ),
+        _buildTabBarLayout(ongoingCourse),
+        _buildTabBarLayout(completedCourse),
+        _buildTabBarLayout(bookmarkedCourse),
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    var future = Future.delayed(const Duration(seconds: 5), () {
+      return <UserCourse>[];
+    });
+
     return Scaffold(
       appBar: _buildAppBar(),
       body: Column(
         children: [
           _buildTabBar(),
           Expanded(
-            child: _buildLayout(),
+            child: _buildLayout(
+              future,
+              future,
+              future,
+            ),
           ),
         ],
       ),
