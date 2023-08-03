@@ -79,7 +79,8 @@ class OnboardingService {
 
   Future resetPassword(String emailAddress, {bool resend = false}) async {
     try {
-      var callable = _firebaseFunctions.httpsCallable("auth-sendPasswordResetEmail");
+      var callable =
+          _firebaseFunctions.httpsCallable("auth-sendPasswordResetEmail");
       await callable.call(<String, dynamic>{
         "email": emailAddress,
         "resend": resend,
@@ -105,7 +106,8 @@ class OnboardingService {
 
   Future confirmResetPassword(
       String newPassword, String emailAddress, String resetCode) async {
-    var callable = _firebaseFunctions.httpsCallable("auth-confirmResetPassword");
+    var callable =
+        _firebaseFunctions.httpsCallable("auth-confirmResetPassword");
     try {
       await callable.call(<String, String>{
         "code": resetCode,
@@ -131,7 +133,11 @@ class OnboardingService {
   }
 
   Future signOut() async {
-    await _googleSignIn.disconnect();
     await _fireaseAuth.signOut();
+    try {
+      await _googleSignIn.disconnect();
+    } catch (e) {
+      // No need to check since this user did not sign in with google
+    }
   }
 }
