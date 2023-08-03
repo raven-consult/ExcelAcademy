@@ -48,6 +48,7 @@ class _PhoneSetup extends State<PhoneSetup> {
   }
 
   Future<void> _uploadFileStorage() async {
+    LoadingIndicatorDialog().show(context);
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ["jpg", "png", "jpeg"],
@@ -60,18 +61,19 @@ class _PhoneSetup extends State<PhoneSetup> {
       print("Current user is not null");
     }
     if (result != null) {
-      print("File is not null");
       PlatformFile platformFile = result.files.first;
       final file = File(platformFile.path!);
       // upload file to firebase storage
       final ref = getUserStoragePath(currentUser.uid, platformFile.extension!);
       try {
         await ref.putFile(file);
-        await FirebaseAuth.instance.currentUser!.updatePhotoURL(ref.fullPath);
+        await FirebaseAuth.instance.currentUser!
+            .updatePhotoURL(await ref.getDownloadURL());
         var userService = UserService(currentUser.uid);
         await userService.updateUserData(
-          profilePicture: ref.fullPath,
+          profilePicture: await ref.getDownloadURL(),
         );
+        LoadingIndicatorDialog().dismiss();
         setState(() {
           _selectedFile = file;
         });
@@ -227,9 +229,7 @@ class _PhoneSetup extends State<PhoneSetup> {
               "Kindly choose an avatar to pick from to use.",
               "assign_avatar",
               (done) {
-                LoadingIndicatorDialog().show(context);
                 _uploadFileStorage().whenComplete(() {
-                  LoadingIndicatorDialog().dismiss();
                   done(true);
                 });
               },
