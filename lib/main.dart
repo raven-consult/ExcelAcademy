@@ -81,14 +81,17 @@ class ExcelAcademy extends StatelessWidget {
     FlutterNativeSplash.remove();
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
         systemNavigationBarColor: colorScheme.surface,
-        /* statusBarColor: Colors.transparent, //top status bar */
-        /* statusBarIconBrightness: Brightness.dark, // status bar icons' color */
-        /* systemNavigationBarIconBrightness: */
-        /*     Brightness.dark, //navigation bar icons' color */
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: MaterialApp(
         theme: theme,
+        darkTheme: darkTheme,
+        title: "Excel Academy",
+        initialRoute: initialRoute,
+        onGenerateRoute: _onGenerateRoute,
         builder: (context, child) {
           return ScrollConfiguration(
             behavior: const ScrollBehavior().copyWith(
@@ -97,10 +100,6 @@ class ExcelAcademy extends StatelessWidget {
             child: child!,
           );
         },
-        darkTheme: darkTheme,
-        title: "Excel Academy",
-        onGenerateRoute: _onGenerateRoute,
-        initialRoute: initialRoute,
       ),
     );
   }

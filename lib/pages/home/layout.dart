@@ -38,7 +38,9 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
         const Categories(),
         const Library(),
         const Cart(),
-        const Profile(),
+        Profile(
+          goToRegister: widget.gotoRegister,
+        ),
       ];
 
   @override

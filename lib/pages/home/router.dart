@@ -16,16 +16,16 @@ class HomeRouter extends StatefulWidget {
 
 class _HomeRouter extends State<HomeRouter> {
   void _gotoCart() {
-    Navigator.of(context).pushNamed("/cart");
+    Navigator.of(context).pushNamed("cart");
   }
 
   void _gotoNotification() {
-    Navigator.of(context).pushNamed("/notifications");
+    Navigator.of(context).pushNamed("notifications");
   }
 
   void gotoRegister() async {
     await Navigator.of(context).pushNamed(
-      "/onboarding",
+      "onboarding",
       arguments: const OnboardingOptions(
         initialRoute: "/create_account",
       ),
