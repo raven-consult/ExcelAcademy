@@ -4,14 +4,14 @@ import "package:circular_chart_flutter/circular_chart_flutter.dart";
 import "package:mobile/components/shimmer.dart";
 import "package:mobile/services/user_library.dart";
 
-class Library extends StatefulWidget {
-  const Library({super.key});
+class MyLearning extends StatefulWidget {
+  const MyLearning({super.key});
 
   @override
-  State<Library> createState() => _Library();
+  State<MyLearning> createState() => _MyLearning();
 }
 
-class _Library extends State<Library> with TickerProviderStateMixin {
+class _MyLearning extends State<MyLearning> with TickerProviderStateMixin {
   late TabController _tabController;
 
   final List<GlobalKey<AnimatedCircularChartState>> _chartKey = [];
@@ -42,7 +42,7 @@ class _Library extends State<Library> with TickerProviderStateMixin {
           },
         ),
       ],
-      title: const Text("Library"),
+      title: const Text("My Learning"),
     );
   }
 

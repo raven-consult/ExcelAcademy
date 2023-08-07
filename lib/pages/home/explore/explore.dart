@@ -13,6 +13,7 @@ class Explore extends StatefulWidget {
   final Function gotoCart;
   final Function gotoLogin;
   final Function gotoRegister;
+  final Function gotoMyLearning;
   final Function gotoNotification;
 
   const Explore({
@@ -20,6 +21,7 @@ class Explore extends StatefulWidget {
     required this.gotoCart,
     required this.gotoLogin,
     required this.gotoRegister,
+    required this.gotoMyLearning,
     required this.gotoNotification,
   });
 
@@ -56,10 +58,8 @@ class _Explore extends State<Explore> with AutomaticKeepAliveClientMixin {
             const SizedBox(height: 24),
             const CourseProgramsList(),
             const SizedBox(height: 24),
-            const OngoingCourse(
-              progress: 50,
-              courseName:
-                  "ICAN Public Sector Accounting and Finance (Revision)",
+            OngoingCourse(
+              gotoMyLearning: widget.gotoMyLearning,
             ),
             const SizedBox(height: 24),
             CoursesGroup(
