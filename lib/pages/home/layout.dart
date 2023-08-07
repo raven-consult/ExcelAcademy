@@ -32,6 +32,7 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
         Explore(
           gotoCart: _gotoCart,
           gotoLogin: widget.gotoLogin,
+          gotoCategories: _gotoCategories,
           gotoMyLearning: _gotoMyLearning,
           gotoRegister: widget.gotoRegister,
           gotoNotification: widget.gotoNotification,
@@ -90,6 +91,13 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  void _gotoCategories() {
+    setState(() {
+      _currentIndex = 1;
+      _tabController.animateTo(_currentIndex);
+    });
   }
 
   void _gotoCart() {
