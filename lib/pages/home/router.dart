@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "layout.dart";
+import "search/search.dart";
 import "package:mobile/pages/onboarding/onboarding.dart";
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -52,6 +53,9 @@ class _HomeRouter extends State<HomeRouter> {
           gotoRegister: gotoRegister,
           gotoNotification: _gotoNotification,
         );
+        break;
+      case "search":
+        page = const Search();
         break;
     }
 

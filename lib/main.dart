@@ -15,9 +15,7 @@ import "theme/color.dart";
 import "firebase_options.dart";
 
 import "pages/home/home.dart";
-import "pages/cart/cart.dart";
 import "pages/onboarding/onboarding.dart";
-import "pages/notifications/notifications.dart";
 
 Future<bool> isUserSignedIn() async {
   var user = await FirebaseAuth.instance.authStateChanges().first;
@@ -118,12 +116,6 @@ class ExcelAcademy extends StatelessWidget {
         } else {
           page = const Onboarding(subRoute: "/");
         }
-        break;
-      case "cart":
-        page = const Cart();
-        break;
-      case "notifications":
-        page = const NotificationsPage();
         break;
     }
 
