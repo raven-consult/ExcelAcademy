@@ -26,3 +26,10 @@ export interface VerifyResetOTPRequest {
 export interface VerifyResetOTPResponse {
   confirmed: boolean;
 }
+
+export interface SetUserPhoneNumberRequest {
+  uid: string;
+  phoneNumber: string;
+}
+
+export interface SetUserPhoneNumberResponse {}

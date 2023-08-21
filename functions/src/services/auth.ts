@@ -8,6 +8,8 @@ import {
   VerifyResetOTPResponse,
   ConfirmResetPasswordRequest,
   SendPasswordResetEmailRequest,
+  SetUserPhoneNumberRequest,
+  SetUserPhoneNumberResponse,
 } from "../types";
 
 
@@ -65,4 +67,17 @@ export const sendPasswordResetEmail = functions.https.onCall(async (data: SendPa
   }
 
   functions.logger.info("Sending password reset email", data);
+});
+
+// The function set the user's phone number in the firebase auth
+// This bypasses the phone number verification process from that
+// is required by firebase auth in the client side
+export const setUserPhoneNumber = functions.https.onCall(async (data: SetUserPhoneNumberRequest) => {
+  const auth = admin.auth();
+
+  await auth.updateUser(data.uid, {
+    phoneNumber: data.phoneNumber,
+  });
+
+  return {} as SetUserPhoneNumberResponse;
 });
