@@ -5,18 +5,21 @@ import "package:mobile/services/available_programs.dart";
 
 class CourseProgramItem extends StatelessWidget {
   final CourseProgramItemData item;
+  final Function()? onTap;
 
   const CourseProgramItem({
     super.key,
+    this.onTap,
     required this.item,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        print("Tapped ${item.fullName}");
-      },
+      onTap: onTap ??
+          () {
+            print("Tapped ${item.fullName}");
+          },
       child: Container(
         margin: const EdgeInsets.symmetric(
           vertical: 6,

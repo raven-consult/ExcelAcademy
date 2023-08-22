@@ -8,6 +8,7 @@ String _getURL(String icon) {
 }
 
 class CourseProgramItemData {
+  final String id;
   final int color;
   final String initial;
   final String fullName;
@@ -16,6 +17,7 @@ class CourseProgramItemData {
   final int numOfCourses;
 
   const CourseProgramItemData({
+    required this.id,
     required this.color,
     required this.initial,
     required this.fullName,
@@ -36,6 +38,7 @@ class ProgramsService {
 
 final List<CourseProgramItemData> _sampleCoursePrograms = [
   CourseProgramItemData(
+    id: "1",
     initial: "ICAN",
     color: 0xFF0F0BAB,
     fullName: "Institute of Chartered Accountants of Nigeria",
@@ -44,6 +47,7 @@ final List<CourseProgramItemData> _sampleCoursePrograms = [
     numOfCourses: 23,
   ),
   CourseProgramItemData(
+    id: "2",
     initial: "ACCA",
     color: 0xFFFF822B,
     fullName: "Association of Chartered Certified Accountants",
@@ -52,6 +56,7 @@ final List<CourseProgramItemData> _sampleCoursePrograms = [
     numOfCourses: 23,
   ),
   CourseProgramItemData(
+    id: "3",
     initial: "CIMA",
     color: 0xFF1FAF73,
     fullName: "Chartered Institute of Management Accountants",
@@ -60,6 +65,7 @@ final List<CourseProgramItemData> _sampleCoursePrograms = [
     numOfCourses: 23,
   ),
   CourseProgramItemData(
+    id: "4",
     initial: "CITN",
     color: 0xFF9747FF,
     fullName: "Chartered Institute of Taxation of Nigeria",

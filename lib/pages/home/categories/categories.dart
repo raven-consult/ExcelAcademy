@@ -1,9 +1,10 @@
 import "package:flutter/material.dart";
+import "package:mobile/pages/home/categories/category_search.dart";
 
-import '../components/course_program_item.dart';
-
-import "package:mobile/components/shimmer.dart";
+import "package:mobile/services/course.dart";
 import "package:mobile/services/available_programs.dart";
+
+import "all_categories.dart";
 
 class Categories extends StatefulWidget {
   const Categories({super.key});
@@ -14,6 +15,8 @@ class Categories extends StatefulWidget {
 
 class _Categories extends State<Categories> with AutomaticKeepAliveClientMixin {
   final ProgramsService _programsService = ProgramsService();
+
+  CourseProgramItemData? _selectedCategory;
 
   late Future<List<CourseProgramItemData>> _programs;
 
@@ -95,7 +98,9 @@ class _Categories extends State<Categories> with AutomaticKeepAliveClientMixin {
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: () {
-          print("Hello");
+          setState(() {
+            _selectedCategory = null;
+          });
         },
       ),
       actions: [
@@ -106,8 +111,16 @@ class _Categories extends State<Categories> with AutomaticKeepAliveClientMixin {
           },
         ),
       ],
-      title: const Text("Categories"),
+      title: Text(
+        _selectedCategory == null
+            ? "Categories"
+            : "${_selectedCategory!.initial} Courses",
+      ),
     );
+  }
+
+  Future<List<Course>> _getProgramCourses(String programId) async {
+    return [];
   }
 
   @override
@@ -127,54 +140,21 @@ class _Categories extends State<Categories> with AutomaticKeepAliveClientMixin {
             child: Column(
               children: [
                 _buildSearchBar(),
-                FutureBuilder(
-                  future: _programs,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return GridView.count(
-                        shrinkWrap: true,
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.7,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: List.generate(
-                          4,
-                          (index) {
-                            return Container(
-                              margin: const EdgeInsets.symmetric(
-                                vertical: 6,
-                                horizontal: 6,
-                              ),
-                              child: ShimmerWidget.rectangular(),
-                            );
-                          },
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return const Center(
-                        child: Text("Error"),
-                      );
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(
-                        child: Text("No data"),
-                      );
-                    } else {
-                      var snapshotData = snapshot.data!;
-                      return GridView.count(
-                        shrinkWrap: true,
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.7,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          ...snapshotData,
-                          ...snapshotData,
-                          ...snapshotData,
-                        ].map((item) {
-                          return CourseProgramItem(item: item);
-                        }).toList(),
-                      );
-                    }
-                  },
-                ),
+                _selectedCategory == null
+                    ? const SizedBox()
+                    : CategorySearch(
+                        courses: _getProgramCourses(_selectedCategory!.id),
+                      ),
+                _selectedCategory == null
+                    ? AllCategories(
+                        programs: _programs,
+                        onTapCategory: (CourseProgramItemData program) {
+                          setState(() {
+                            _selectedCategory = program;
+                          });
+                        },
+                      )
+                    : const SizedBox(),
               ],
             ),
           ),
