@@ -12,10 +12,13 @@ class Categories extends StatefulWidget {
   State<Categories> createState() => _Categories();
 }
 
-class _Categories extends State<Categories> {
+class _Categories extends State<Categories> with AutomaticKeepAliveClientMixin {
   final ProgramsService _programsService = ProgramsService();
 
   late Future<List<CourseProgramItemData>> _programs;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -109,6 +112,8 @@ class _Categories extends State<Categories> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, isScrolled) {

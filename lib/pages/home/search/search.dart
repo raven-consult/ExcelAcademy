@@ -10,8 +10,16 @@ const imageUrl = "https://firebasestorage.googleapis.com/v0"
     "/b/excel-academy-online.appspot.com"
     "/o/assets%2Fhomepage%2Fcontinue-learning.png?alt=media";
 
-class Search extends StatelessWidget {
+class Search extends StatefulWidget {
   const Search({super.key});
+
+  @override
+  State<Search> createState() => _Search();
+}
+
+class _Search extends State<Search> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   Widget _buildSearchBar() {
     return TextField(
@@ -187,6 +195,8 @@ class Search extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

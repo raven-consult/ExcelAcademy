@@ -11,10 +11,14 @@ class MyLearning extends StatefulWidget {
   State<MyLearning> createState() => _MyLearning();
 }
 
-class _MyLearning extends State<MyLearning> with TickerProviderStateMixin {
+class _MyLearning extends State<MyLearning>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late TabController _tabController;
 
   final List<GlobalKey<AnimatedCircularChartState>> _chartKey = [];
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -448,6 +452,8 @@ class _MyLearning extends State<MyLearning> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     var future = Future.delayed(const Duration(seconds: 5), () {
       return <UserCourse>[];
     });
