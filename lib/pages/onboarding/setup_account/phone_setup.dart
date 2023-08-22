@@ -69,10 +69,12 @@ class _PhoneSetup extends State<PhoneSetup> {
         await ref.putFile(file);
         await FirebaseAuth.instance.currentUser!
             .updatePhotoURL(await ref.getDownloadURL());
-        var userService = UserService(currentUser.uid);
-        await userService.updateUserData(
-          profilePicture: await ref.getDownloadURL(),
-        );
+
+        // update user data
+        // var userService = await PlatformUser.getUser(currentUser.uid);
+        /* await userService.updateUserData( */
+        /*   profilePicture: await ref.getDownloadURL(), */
+        /* ); */
         LoadingIndicatorDialog().dismiss();
         setState(() {
           _selectedFile = file;
