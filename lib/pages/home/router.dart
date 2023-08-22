@@ -24,6 +24,16 @@ class _HomeRouter extends State<HomeRouter> {
     Navigator.of(context).pushNamed("notifications");
   }
 
+  void _gotoSearch() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return const Search();
+        },
+      ),
+    );
+  }
+
   void gotoRegister() async {
     await Navigator.of(context).pushNamed(
       "onboarding",
@@ -50,12 +60,10 @@ class _HomeRouter extends State<HomeRouter> {
         page = Main(
           gotoCart: _gotoCart,
           gotoLogin: gotoLogin,
+          gotoSearch: _gotoSearch,
           gotoRegister: gotoRegister,
           gotoNotification: _gotoNotification,
         );
-        break;
-      case "search":
-        page = const Search();
         break;
     }
 

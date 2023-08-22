@@ -9,6 +9,7 @@ import "my_learning/my_learning.dart";
 class Main extends StatefulWidget {
   final Function gotoCart;
   final Function gotoLogin;
+  final Function gotoSearch;
   final Function gotoRegister;
   final Function gotoNotification;
 
@@ -16,6 +17,7 @@ class Main extends StatefulWidget {
     super.key,
     required this.gotoCart,
     required this.gotoLogin,
+    required this.gotoSearch,
     required this.gotoRegister,
     required this.gotoNotification,
   });
@@ -32,6 +34,7 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
         Explore(
           gotoCart: _gotoCart,
           gotoLogin: widget.gotoLogin,
+          gotoSearch: widget.gotoSearch,
           gotoCategories: _gotoCategories,
           gotoMyLearning: _gotoMyLearning,
           gotoRegister: widget.gotoRegister,

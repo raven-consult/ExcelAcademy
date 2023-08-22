@@ -12,6 +12,7 @@ import "../components/courses_group.dart";
 class Explore extends StatefulWidget {
   final Function gotoCart;
   final Function gotoLogin;
+  final Function gotoSearch;
   final Function gotoRegister;
   final Function gotoCategories;
   final Function gotoMyLearning;
@@ -21,6 +22,7 @@ class Explore extends StatefulWidget {
     super.key,
     required this.gotoCart,
     required this.gotoLogin,
+    required this.gotoSearch,
     required this.gotoRegister,
     required this.gotoCategories,
     required this.gotoMyLearning,
@@ -54,7 +56,9 @@ class _Explore extends State<Explore> with AutomaticKeepAliveClientMixin {
               goToNotifications: widget.gotoNotification,
             ),
             const SizedBox(height: 24),
-            const Search(),
+            Search(
+              gotoSearch: widget.gotoSearch,
+            ),
             const SizedBox(height: 24),
             const AdPanel(),
             const SizedBox(height: 24),
