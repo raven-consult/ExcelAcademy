@@ -8,7 +8,7 @@ class UserGreeter extends StatelessWidget {
   final Function onClickLogin;
   final Function onClickRegister;
 
-  UserGreeter({
+  const UserGreeter({
     super.key,
     required this.onClickLogin,
     required this.onClickRegister,

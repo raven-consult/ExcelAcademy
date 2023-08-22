@@ -225,8 +225,7 @@ class CourseCard extends StatelessWidget {
                     child: AvatarStack(
                       height: 30,
                       avatars: item.students
-                          .map((e) =>
-                              CachedNetworkImageProvider(e.profilePicture))
+                          .map((e) => CachedNetworkImageProvider(e.photoUrl))
                           .toList(),
                     ),
                   ),
@@ -295,7 +294,7 @@ class CourseItem {
 // "https://i.pravatar.cc/150?img=$n
 
 List<CourseItem> mockData() {
-  return [
+  return const [
     CourseItem(
       id: "2",
       title: "Flutter Course",
@@ -304,16 +303,14 @@ List<CourseItem> mockData() {
       subtitle: englishSubtitle,
       students: [
         PlatformUser(
-          username: "John Doe",
-          gender: Gender.male,
-          profilePicture: "https://picsum.photos/207",
-          dateOfBirth: DateTime.now(),
+          uid: "1",
+          displayName: "John Doe",
+          photoUrl: "https://picsum.photos/207",
         ),
         PlatformUser(
-          username: "John Doe",
-          gender: Gender.male,
-          profilePicture: "https://picsum.photos/208",
-          dateOfBirth: DateTime.now(),
+          uid: "2",
+          displayName: "John Doe",
+          photoUrl: "https://picsum.photos/208",
         ),
       ],
     ),
@@ -325,16 +322,14 @@ List<CourseItem> mockData() {
       subtitle: englishSubtitle,
       students: [
         PlatformUser(
-          username: "John Doe",
-          gender: Gender.male,
-          profilePicture: "https://picsum.photos/201",
-          dateOfBirth: DateTime.now(),
+          uid: "3",
+          displayName: "John Doe",
+          photoUrl: "https://picsum.photos/201",
         ),
         PlatformUser(
-          username: "John Doe",
-          gender: Gender.male,
-          profilePicture: "https://picsum.photos/200",
-          dateOfBirth: DateTime.now(),
+          uid: "4",
+          displayName: "John Doe",
+          photoUrl: "https://picsum.photos/200",
         ),
       ],
     ),
@@ -346,16 +341,14 @@ List<CourseItem> mockData() {
       subtitle: null,
       students: [
         PlatformUser(
-          username: "John Doe",
-          gender: Gender.male,
-          profilePicture: "https://picsum.photos/202",
-          dateOfBirth: DateTime.now(),
+          uid: "5",
+          displayName: "John Doe",
+          photoUrl: "https://picsum.photos/202",
         ),
         PlatformUser(
-          username: "John Doe",
-          gender: Gender.male,
-          profilePicture: "https://picsum.photos/203",
-          dateOfBirth: DateTime.now(),
+          uid: "6",
+          displayName: "John Doe",
+          photoUrl: "https://picsum.photos/203",
         ),
       ],
     ),
@@ -367,16 +360,14 @@ List<CourseItem> mockData() {
       subtitle: null,
       students: [
         PlatformUser(
-          username: "John Doe",
-          gender: Gender.male,
-          profilePicture: "https://picsum.photos/202",
-          dateOfBirth: DateTime.now(),
+          uid: "7",
+          displayName: "John Doe",
+          photoUrl: "https://picsum.photos/202",
         ),
         PlatformUser(
-          username: "John Doe",
-          gender: Gender.male,
-          profilePicture: "https://picsum.photos/203",
-          dateOfBirth: DateTime.now(),
+          uid: "8",
+          displayName: "John Doe",
+          photoUrl: "https://picsum.photos/203",
         ),
       ],
     ),
