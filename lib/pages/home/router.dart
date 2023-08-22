@@ -56,7 +56,7 @@ class _HomeRouter extends State<HomeRouter> {
     Widget? page;
 
     switch (settings.name) {
-      case "/":
+      case "":
         page = Main(
           gotoCart: _gotoCart,
           gotoLogin: gotoLogin,
