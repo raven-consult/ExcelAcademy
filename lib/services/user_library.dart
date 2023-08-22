@@ -56,30 +56,32 @@ class UserCourse {
   }
 
   double getProgressPercentage() {
-    return (progress / course.videos.length) * 100;
+    var videos = course.videos;
+
+    return (progress / videos.length) * 100;
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      "id": id,
-      "progress": progress,
-      "course": course.toMap(),
-      "addedAt": addedAt,
-      "updatedAt": updatedAt,
-      "status": status.index,
-    };
-  }
+  /* Map<String, dynamic> toMap() { */
+  /*   return { */
+  /*     "id": id, */
+  /*     "progress": progress, */
+  /*     "course": course.toMap(), */
+  /*     "addedAt": addedAt, */
+  /*     "updatedAt": updatedAt, */
+  /*     "status": status.index, */
+  /*   }; */
+  /* } */
 
-  factory UserCourse.fromMap(Map<String, dynamic> map) {
-    return UserCourse(
-      id: map["id"],
-      progress: map["progress"],
-      course: Course.fromMap(map["course"]),
-      addedAt: map["addedAt"],
-      updatedAt: map["updatedAt"],
-      status: CourseStatus.values[map["status"]],
-    );
-  }
+  /* factory UserCourse.fromMap(Map<String, dynamic> map) { */
+  /*   return UserCourse( */
+  /*     id: map["id"], */
+  /*     progress: map["progress"], */
+  /*     course: Course.fromMap(map["course"]), */
+  /*     addedAt: map["addedAt"], */
+  /*     updatedAt: map["updatedAt"], */
+  /*     status: CourseStatus.values[map["status"]], */
+  /*   ); */
+  /* } */
 }
 
 class UserLibraryService {
@@ -136,8 +138,7 @@ class UserLibraryService {
 
     var doc = res.docs.first;
 
-    var courseService = CourseService();
-    var course = await courseService.getCourseById(doc["courseId"]);
+    var course = await Course.fromId(doc["courseId"]);
 
     return UserCourse(
       id: doc.id,
