@@ -7,9 +7,9 @@ RUN go mod download
 
 COPY . .
 
-RUN apt update -y \
-  && apt install -y curl unzip \
-  && rm -rf /var/lib/apt/lists/*
+RUN apk add --update \
+  curl \
+  && rm -rf /var/cache/apk/*
 
 ENV PB_REL="https://github.com/protocolbuffers/protobuf/releases"
 RUN curl -LO $PB_REL/download/v3.15.8/protoc-3.15.8-linux-x86_64.zip \
