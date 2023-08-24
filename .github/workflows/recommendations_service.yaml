@@ -148,6 +148,7 @@ jobs:
 
   deploy:
     name: Deploy
+    needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
 
@@ -169,11 +170,12 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: services/recommendations
+        working-directory: services/recommendations/infra/
 
       - name: Terraform Plan
         run: terraform plan -no-color
-        working-directory: services/recommendations
+        working-directory: services/recommendations/infra/
 
       - name: Update Infrastructure
-        run: terraform apply
+        run: terraform apply -input=false -auto-approve
+        working-directory: services/recommendations/infra/
