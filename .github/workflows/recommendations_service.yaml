@@ -46,6 +46,9 @@ jobs:
       - name: Run tests
         run: go test ./services/recommendations/
 
+      - name: Docker lint
+        run: docker build -t testing -f services/recommendations/Dockerfile .
+
   infra_test:
     name: Infrastructure Test
     runs-on: ubuntu-latest
