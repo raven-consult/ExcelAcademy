@@ -45,3 +45,12 @@ app.*.map.json
 
 # Javascript
 node_modules/
+
+# Terraform
+.terraform/
+
+# Protocol buffer / gRPC
+*pb*.*
+
+# Secrets
+.env
