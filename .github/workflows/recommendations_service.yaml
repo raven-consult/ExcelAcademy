@@ -1,0 +1,179 @@
+name: Recommendations Service
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - "services/recommendations/**"
+
+jobs:
+  test:
+    name: Pull Request Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Golang
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.19"
+
+      - name: Setup protoc
+        uses: arduino/setup-protoc@v2.0.0
+
+      - name: Setup
+        run: |
+           go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+           go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Generate protobuf code
+        run: go generate ./services/recommendations/...
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v3.7.0
+        with:
+          version: "v1.54"
+          working-directory: services/recommendations
+
+      - name: Run tests
+        run: go test ./services/recommendations/
+
+  infra_test:
+    name: Infrastructure Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.5
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform test
+        id: fmt
+        run: terraform fmt -check=true -diff=true -recursive
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+        continue-on-error: true
+
+      - name: Send message to PR
+        uses: actions/github-script@v6
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            <details><summary>Validation Output</summary>
+
+            \`\`\`\n
+            ${{ steps.validate.outputs.stdout }}
+            \`\`\`
+
+            </details>
+
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - id: auth
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EXCEL_ACADEMY_ONLINE }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - name: Configure Artifact Registry
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev
+
+      - name: Build Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: services/recommendations/Dockerfile
+          push: true
+          tags: us-central1-docker.pkg.dev/excel-academy-online/services/recommendations:latest
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - id: auth
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EXCEL_ACADEMY_ONLINE }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.5
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: services/recommendations
+
+      - name: Terraform Plan
+        run: terraform plan -no-color
+        working-directory: services/recommendations
+
+      - name: Update Infrastructure
+        run: terraform apply

@@ -1,8 +1,12 @@
-module excelacademyonline.com
+module excel_academy
 
 go 1.19
 
-require firebase.google.com/go/v4 v4.12.0
+require (
+	firebase.google.com/go/v4 v4.12.0
+	google.golang.org/grpc v1.57.0
+	google.golang.org/protobuf v1.31.0
+)
 
 require (
 	cloud.google.com/go v0.110.6 // indirect
@@ -36,6 +40,4 @@ require (
 	google.golang.org/genproto v0.0.0-20230803162519-f966b187b2e5 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20230803162519-f966b187b2e5 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230807174057-1744710a1577 // indirect
-	google.golang.org/grpc v1.57.0 // indirect
-	google.golang.org/protobuf v1.31.0 // indirect
 )

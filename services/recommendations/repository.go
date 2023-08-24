@@ -27,6 +27,9 @@ func NewDatabaseClient(DatabaseURL string) (*db.Client, error) {
 	}
 
 	client, err := app.Database(context.Background())
+	if err != nil {
+		return nil, err
+	}
 
 	return client, nil
 }

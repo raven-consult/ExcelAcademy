@@ -7,7 +7,8 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o ./bin/recommendation ./services/recommendation/
+RUN go generate ./services/recommendations/...
+RUN go build -o ./bin/recommendations ./services/recommendations/
 
 FROM alpine:latest
 
@@ -15,4 +16,4 @@ WORKDIR /app
 
 COPY --from=builder /app/bin/ /app/bin/
 
-CMD ["/app/bin/recommendation"]
+CMD ["/app/bin/recommendations"]

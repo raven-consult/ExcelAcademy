@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "excel_academy/service/recommendations;main";
+
+service RecommendationsService {
+  rpc GetRecommendedCourses(GetRecommendedCoursesRequest) returns (GetRecommendedCoursesResponse);
+}
+
+
+message GetRecommendedCoursesRequest {}
+
+message GetRecommendedCoursesResponse {
+  repeated RecommendedCourse courses = 1;
+}
+
+message RecommendedCourse {
+  string courseId = 1;
+}
+
