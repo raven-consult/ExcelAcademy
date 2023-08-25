@@ -8,11 +8,34 @@ on:
     paths:
       - "services/recommendations/**"
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
+  determine_build:
+    name: Determine builds to run
+    runs-on: ubuntu-latest
+
+    outputs:
+      src: ${{ steps.changes.outputs.src }}
+      infra: ${{ steps.changes.outputs.infra }}
+
+    steps:
+      - id: changes
+        name: Paths Changes Filter
+        uses: dorny/paths-filter@v2.11.1
+        with:
+          filters: |
+            src:
+              - "services/recommendations/*.go"
+            infra:
+              - "services/recommendations/infra/**"
   test:
     name: Pull Request Test
+    needs: determine_build
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && needs.determine_build.outputs.src == 'true'
 
     steps:
       - name: Checkout
@@ -51,8 +74,9 @@ jobs:
 
   infra_test:
     name: Infrastructure Test
+    needs: determine_build
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && needs.determine_build.outputs.infra == 'true'
 
     permissions:
       contents: read

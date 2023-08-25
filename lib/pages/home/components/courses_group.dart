@@ -4,11 +4,12 @@ import "package:avatar_stack/avatar_stack.dart";
 import "package:cached_network_image/cached_network_image.dart";
 
 import "package:mobile/services/user.dart";
+import "package:mobile/services/course.dart";
 
 class CoursesGroup extends StatelessWidget {
   final String title;
   final String description;
-  final List<CourseItem> courseItems;
+  final Future<List<Course>> courseItems;
 
   const CoursesGroup({
     super.key,
@@ -17,7 +18,7 @@ class CoursesGroup extends StatelessWidget {
     required this.courseItems,
   });
 
-  List<Widget> _buildList(BuildContext context) {
+  List<Widget> _buildList(List<Course> courseItems) {
     var items = courseItems.map((item) => CourseCard(item: item));
 
     List<Widget> res = [];
@@ -110,12 +111,29 @@ class CoursesGroup extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: _buildList(context),
-            ),
-          )
+          FutureBuilder<List<Course>>(
+            future: courseItems,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+                return const Center(
+                  child: Text("No data"),
+                );
+              }
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: _buildList(snapshot.data!),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -123,21 +141,24 @@ class CoursesGroup extends StatelessWidget {
 }
 
 class CourseCard extends StatelessWidget {
-  final CourseItem item;
+  final Course item;
 
   const CourseCard({
     super.key,
     required this.item,
   });
 
-  void _onClick() {
-    print("Hello World");
+  void _onClick(BuildContext context) {
+    Navigator.of(context).pushNamed(
+      "course_detail",
+      arguments: item,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: _onClick,
+      onTap: () => _onClick(context),
       child: Container(
         height: 230,
         width: 265,
@@ -160,35 +181,11 @@ class CourseCard extends StatelessWidget {
                   topRight: Radius.circular(6),
                 ),
                 image: DecorationImage(
-                  image: CachedNetworkImageProvider(item.imageUrl),
+                  image: CachedNetworkImageProvider(item.thumbnailUrl),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-            item.subtitle != null
-                ? Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 4,
-                      horizontal: 8,
-                    ),
-                    color: Colors.grey[100],
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 12,
-                          backgroundImage: CachedNetworkImageProvider(
-                            item.subtitle!.imageUrl,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          item.subtitle!.title,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  )
-                : const SizedBox(height: 0),
             const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -220,14 +217,26 @@ class CourseCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Flexible(
-                    flex: 2,
-                    child: AvatarStack(
-                      height: 30,
-                      avatars: item.students
-                          .map((e) => CachedNetworkImageProvider(e.photoUrl))
-                          .toList(),
-                    ),
+                  FutureBuilder(
+                    future: Future.wait(item.students.map((student) async {
+                      var user = await PlatformUser.getUser(student);
+                      return CachedNetworkImageProvider(user.photoUrl);
+                    }).toList()),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Text("0");
+                      } else if (snapshot.hasError) {
+                        return const Text("0");
+                      } else {
+                        return Flexible(
+                          flex: 2,
+                          child: AvatarStack(
+                            height: 30,
+                            avatars: snapshot.data,
+                          ),
+                        );
+                      }
+                    },
                   ),
                   Flexible(
                     fit: FlexFit.tight,

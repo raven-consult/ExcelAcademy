@@ -3,17 +3,23 @@ syntax = "proto3";
 option go_package = "excel_academy/service/recommendations;main";
 
 service RecommendationsService {
-  rpc GetRecommendedCourses(GetRecommendedCoursesRequest) returns (GetRecommendedCoursesResponse);
-}
-
-
-message GetRecommendedCoursesRequest {}
-
-message GetRecommendedCoursesResponse {
-  repeated RecommendedCourse courses = 1;
+  rpc GetLatestCourses(GetLatestCoursesRequest) returns (GetLatestCoursesResponse);
+  rpc GetPopularCourses(GetPopularCoursesRequest) returns (GetPopularCoursesResponse);
 }
 
 message RecommendedCourse {
   string courseId = 1;
+}
+
+message GetPopularCoursesRequest {}
+
+message GetPopularCoursesResponse {
+  repeated RecommendedCourse courses = 1;
+}
+
+message GetLatestCoursesRequest {}
+
+message GetLatestCoursesResponse {
+  repeated RecommendedCourse courses = 1;
 }
 

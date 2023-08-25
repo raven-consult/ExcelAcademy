@@ -1,12 +1,13 @@
 import "package:flutter/material.dart";
 
+import "package:mobile/services/recommendations.dart";
+
 import "search.dart";
 import "nav_cart.dart";
 import "ad_panel.dart";
 import "user_greeter.dart";
 import "ongoing_course.dart";
 import "course_programs_list.dart";
-
 import "../components/courses_group.dart";
 
 class Explore extends StatefulWidget {
@@ -36,6 +37,12 @@ class Explore extends StatefulWidget {
 class _Explore extends State<Explore> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
+  final recommendationService = RecommendationService(
+    recommendationsServiceConn["host"]!,
+    recommendationsServiceConn["port"]!,
+    getGRPCCallOptions(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -73,13 +80,13 @@ class _Explore extends State<Explore> with AutomaticKeepAliveClientMixin {
             CoursesGroup(
               title: "Popular Courses",
               description: "Most popular courses",
-              courseItems: mockData(),
+              courseItems: recommendationService.getPopularCourses(),
             ),
             const SizedBox(height: 8),
             CoursesGroup(
               title: "Latest Courses",
               description: "Newly added courses",
-              courseItems: mockData().reversed.toList(),
+              courseItems: recommendationService.getLatestCourses(),
             ),
           ],
         ),

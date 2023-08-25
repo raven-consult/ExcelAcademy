@@ -4,6 +4,11 @@ import "package:firebase_auth/firebase_auth.dart";
 import "package:mobile/services/course.dart";
 import "package:mobile/services/generated/services/recommendations/recommendations.pbgrpc.dart";
 
+const Map<String, String> recommendationsServiceConn = {
+  "host": "recommendations-gdw5iipadq-uc.a.run.app",
+  "port": "443"
+};
+
 CallOptions getGRPCCallOptions() {
   return CallOptions(providers: [
     (metadata, uri) async {
@@ -29,9 +34,18 @@ class RecommendationService {
     _client = RecommendationsServiceClient(_channel, options: callOptions);
   }
 
+  Future<List<Course>> getLatestCourses() async {
+    var req = GetLatestCoursesRequest();
+    var res = await _client.getLatestCourses(req);
+
+    return Future.wait(res.courses
+        .map((course) async => await Course.fromId(course.courseId))
+        .toList());
+  }
+
   Future<List<Course>> getPopularCourses() async {
-    var req = GetRecommendedCoursesRequest();
-    var res = await _client.getRecommendedCourses(req);
+    var req = GetPopularCoursesRequest();
+    var res = await _client.getPopularCourses(req);
 
     return Future.wait(res.courses
         .map((course) async => await Course.fromId(course.courseId))
