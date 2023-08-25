@@ -30,6 +30,7 @@ jobs:
           filters: |
             src:
               - "services/recommendations/*.go"
+              - "services/recommendations/Dockerfile"
             infra:
               - "services/recommendations/infra/**"
   test:
