@@ -16,6 +16,7 @@ jobs:
   determine_build:
     name: Determine builds to run
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
 
     outputs:
       src: ${{ steps.changes.outputs.src }}
@@ -171,7 +172,9 @@ jobs:
           context: .
           file: services/recommendations/Dockerfile
           push: true
-          tags: us-central1-docker.pkg.dev/excel-academy-online/services/recommendations:latest
+          tags: |
+            us-central1-docker.pkg.dev/excel-academy-online/services/recommendations:latest
+            us-central1-docker.pkg.dev/excel-academy-online/services/recommendations:${{ github.sha }}
 
   deploy:
     name: Deploy
@@ -206,3 +209,5 @@ jobs:
       - name: Update Infrastructure
         run: terraform apply -input=false -auto-approve
         working-directory: services/recommendations/infra/
+        env:
+          TF_VAR_tag: ${{ github.sha }}

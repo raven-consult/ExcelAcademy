@@ -1,8 +1,7 @@
-
 module "cloud_run_grpc" {
   source    = "../../../infra/modules/cloud-run"
   name      = "recommendations"
-  image     = "us-central1-docker.pkg.dev/excel-academy-online/services/recommendations:latest"
+  image     = "us-central1-docker.pkg.dev/excel-academy-online/services/recommendations:${var.tag}"
   port      = "8080"
   http2     = true
   always_on = false
@@ -11,6 +10,11 @@ module "cloud_run_grpc" {
     name  = "RTDB_URL"
     value = "https://excel-academy-online-default-rtdb.firebaseio.com"
   }]
+}
+
+variable "tag" {
+  type    = string
+  default = "latest"
 }
 
 output "url" {
