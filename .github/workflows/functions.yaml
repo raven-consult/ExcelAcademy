@@ -1,0 +1,89 @@
+name: Functions
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - "functions/**"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  determine_build:
+    name: Determine tests to run
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    outputs:
+      tests: ${{ steps.changes.outputs.test }}
+
+    steps:
+      - id: changes
+        name: Paths Changes Filter
+        uses: dorny/paths-filter@v2.11.1
+        with:
+          filters: |
+            tests:
+              - "functions/tests/**"
+
+  tests:
+    name: Functions tests
+    needs: determine_build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && needs.determine_build.outputs.tests == 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Nodejs 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install Dependencies
+        run: yarn
+        working-directory: functions
+
+      - name: Run tests
+        run: yarn test
+        working-directory: functions
+
+  functions_build:
+    name: Functions build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Nodejs 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - id: auth
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EXCEL_ACADEMY_ONLINE }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - name: Install firebase
+        run: npm install -g firebase-tools
+
+      - name: Install Dependencies
+        run: yarn
+        working-directory: functions
+
+      - name: Firebase deploy functions
+        run: |
+          firebase deploy \
+              --only functions \
+              --project=excel-academy-online

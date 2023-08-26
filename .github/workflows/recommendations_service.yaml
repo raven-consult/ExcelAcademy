@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   determine_build:
-    name: Determine builds to run
+    name: Determine tests to run
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
 

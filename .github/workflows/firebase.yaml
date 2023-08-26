@@ -1,0 +1,93 @@
+name: Firebase Services
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - "firebase/**"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  determine_build:
+    name: Determine tests to run
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    outputs:
+      tests: ${{ steps.changes.outputs.test }}
+      # configurations: ${{ steps.changes.outputs.configurations }}
+
+    steps:
+      - id: changes
+        name: Paths Changes Filter
+        uses: dorny/paths-filter@v2.11.1
+        with:
+          filters: |
+            tests:
+              - "firebase/tests/**"
+            # configurations:
+            #   - "firebase/*.json"
+            #   - "firebase/*.rules"
+  tests:
+    name: Pull Request Test
+    needs: determine_build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && needs.determine_build.outputs.tests == 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: "14.x"
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: firebase
+
+      - name: Run tests
+        run: npm run test
+        working-directory: firebase
+
+  deploy_configurations:
+    name: Deploy Configurations
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Nodejs 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - id: auth
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EXCEL_ACADEMY_ONLINE }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - name: Install firebase
+        run: npm install -g firebase-tools
+
+      - name: Install Dependencies
+        run: yarn
+        working-directory: functions
+
+      - name: Firebase deploy functions
+        run: |
+          firebase deploy \
+              --only database,firestore,remoteconfig,storage \
+              --project=excel-academy-online
+
