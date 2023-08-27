@@ -2,6 +2,14 @@ name: Mobile
 
 on:
   pull_request:
+    paths:
+      - "lib/**"
+      - "test/**"
+      - "android/**"
+      # Ignore iOS for now
+      #  - "ios/**"
+      - "pubspec.*"
+      - "protos/**"
   workflow_dispatch:
   push:
     branches: [master]

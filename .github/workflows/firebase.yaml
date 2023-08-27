@@ -2,6 +2,8 @@ name: Firebase Services
 
 on:
   pull_request:
+    paths:
+      - "firebase/**"
   workflow_dispatch:
   push:
     branches: [master]

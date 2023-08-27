@@ -2,6 +2,8 @@ name: Functions
 
 on:
   pull_request:
+    paths:
+      - "functions/**"
   workflow_dispatch:
   push:
     branches: [master]
