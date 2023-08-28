@@ -237,7 +237,11 @@ jobs:
 
       - name: Set Ssh key to output
         id: set_ssh_key
-        run: echo "SSH_DATA=$(cat $filePath)" >> $GITHUB_OUTPUT
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "SSH_DATA<<$EOF" >> $GITHUB_OUTPUT
+          echo "$(cat $filePath)" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
         env:
           filePath: ${{ steps.master_ssh_key.outputs.filePath }}
 
@@ -248,15 +252,25 @@ jobs:
           fileName: "master_docker_context"
           encodedString: ${{ secrets.MASTER_PROD_DOCKER_CONTEXT }}
 
-      - name: Add ssh key to ssh-agent
-        uses: webfactory/ssh-agent@v0.7.0
+      - name: Get docker compose environment variables to file
+        run: |
+          echo "${{ secrets.DOCKER_COMPOSE_SECRETS }}" > docker-compose.env
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
         with:
-           ssh-private-key: ${{ steps.set_ssh_key.outputs.SSH_DATA }}
+          key: ${{ steps.set_ssh_key.outputs.SSH_DATA }}
+          known_hosts: "placeholder"
+
+      - name: Add master host to known hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.MASTER_PROD_HOST }} >> ~/.ssh/known_hosts
 
       - name: Import docker context
         run: |
-          docker context import master-prod ./master_docker_context
-          docker context use master-prod
+          docker context create remote \
+            --docker "host=ssh://master@${{ secrets.MASTER_PROD_HOST }}"
+          docker context use remote
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
@@ -279,7 +293,7 @@ jobs:
 
       - name: Update docker compose
         run: |
-          docker compose -f services/search/infra/docker-compose.yml pull
-          docker compose -f services/search/infra/docker-compose.yml down
-          docker compose -f services/search/infra/docker-compose.yml up -d
+          docker compose -f services/search/infra/docker-compose.yaml --env-file docker-compose.env pull
+          docker compose -f services/search/infra/docker-compose.yaml --env-file docker-compose.env down
+          docker compose -f services/search/infra/docker-compose.yaml --env-file docker-compose.env up -d
 
