@@ -235,6 +235,12 @@ jobs:
           fileName: "prod_deploy_key"
           encodedString: ${{ secrets.MASTER_PROD_SSH_KEY }}
 
+      - name: Set Ssh key to output
+        id: set_ssh_key
+        run: echo "SSH_DATA=$(cat $filePath)" >> $GITHUB_OUTPUT
+        env:
+          filePath: ${{ steps.master_ssh_key.outputs.filePath }}
+
       - name: Get Docker context
         id: master_docker_context
         uses: timheuer/base64-to-file@v1.2
@@ -243,7 +249,9 @@ jobs:
           encodedString: ${{ secrets.MASTER_PROD_DOCKER_CONTEXT }}
 
       - name: Add ssh key to ssh-agent
-        run: ssh-add ./prod_deploy_key
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+           ssh-private-key: ${{ steps.set_ssh_key.outputs.SSH_DATA }}
 
       - name: Import docker context
         run: |
