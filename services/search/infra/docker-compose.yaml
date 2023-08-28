@@ -1,0 +1,10 @@
+version: "3.4"
+services:
+  typesense:
+    image: typesense/typesense@sha256:20b4f81ad181421b2e05a678df5a585ce5696559465087dbcfa3a5ec4331ed08
+    restart: on-failure
+    ports:
+      - "8108:8108"
+    volumes:
+      - /srv/typesense:/data
+    command: '--data-dir /data --api-key=$TYPESENSE_API_KEY --enable-cors'

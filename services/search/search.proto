@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option go_package = "excel_academy/service/search";
+
+service SearchService {
+  rpc Query(QueryRequest) returns (QueryResponse) {}
+}
+
+message QueryRequest {
+  string query = 1;
+}
+
+message QueryResponse {
+  repeated QueryResult results = 1;
+}
+
+message QueryResult {
+  string course_id = 1;
+}
+

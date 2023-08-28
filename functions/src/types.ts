@@ -1,4 +1,11 @@
-
+export interface Course {
+  title: string;
+  price: number;
+  rating: number;
+  courseId: string;
+  description: string;
+  thumbnailUrl: string;
+}
 
 export interface SendPasswordResetEmailRequest {
   email: string;
