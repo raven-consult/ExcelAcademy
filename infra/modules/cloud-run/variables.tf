@@ -29,6 +29,12 @@ variable "max_instances" {
   default     = 5
 }
 
+variable "private_vpc_access" {
+  type        = bool
+  description = "Should the service have access to private VPCs"
+  default     = false
+}
+
 variable "always_on" {
   type        = bool
   description = "Make container have at least one instance running"

@@ -8,7 +8,6 @@ locals {
 }
 
 
-
 resource "google_cloud_run_service" "default" {
   name     = var.name
   location = var.location
@@ -19,6 +18,15 @@ resource "google_cloud_run_service" "default" {
       annotations = {
         "autoscaling.knative.dev/maxScale" = tostring(var.max_instances)
         "autoscaling.knative.dev/minScale" = var.always_on == true ? "1" : "0"
+        "run.googleapis.com/network-interfaces" = var.private_vpc_access == true ? jsonencode(
+          [
+            {
+              network    = "default"
+              subnetwork = "default"
+            },
+          ]
+        ) : ""
+        "run.googleapis.com/vpc-access-egress" = var.private_vpc_access == true ? "private-ranges-only" : ""
       }
     }
     spec {
@@ -58,8 +66,9 @@ resource "google_cloud_run_service" "default" {
 
   metadata {
     annotations = {
-      generated-by                 = "terraform"
-      "run.googleapis.com/ingress" = "all"
+      generated-by                      = "terraform"
+      "run.googleapis.com/ingress"      = "all"
+      "run.googleapis.com/launch-stage" = var.private_vpc_access == true ? "BETA" : ""
     }
   }
 
