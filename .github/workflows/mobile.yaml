@@ -79,7 +79,7 @@ jobs:
   android_build:
     name: Android Mobile Build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Checkout
@@ -116,6 +116,12 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Install protobuf
+        run: sudo apt install protobuf-compiler
+
+      - name: Install Dart protoc plugin
+        run: dart pub global activate protoc_plugin
+
       - name: Generate protos
         run: scripts/generate_protos.sh
 
@@ -136,7 +142,7 @@ jobs:
     name: Android Mobile Deploy
     needs: android_build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Checkout
