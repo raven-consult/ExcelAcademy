@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 
+import "package:mobile/utils/grpc.dart";
 import "package:mobile/services/recommendations.dart";
 
 import "search.dart";

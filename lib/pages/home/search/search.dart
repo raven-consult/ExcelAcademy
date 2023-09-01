@@ -1,10 +1,14 @@
 import "package:flutter/material.dart";
 
-import "package:avatar_stack/avatar_stack.dart";
 import "package:carousel_slider/carousel_slider.dart";
-import "package:cached_network_image/cached_network_image.dart";
 
+import "package:mobile/utils/grpc.dart";
 import "../components/courses_group.dart";
+import 'package:mobile/services/course.dart';
+import "package:mobile/services/search.dart";
+
+import "course_item.dart";
+import "featured_video.dart";
 
 const imageUrl = "https://firebasestorage.googleapis.com/v0"
     "/b/excel-academy-online.appspot.com"
@@ -18,12 +22,45 @@ class Search extends StatefulWidget {
 }
 
 class _Search extends State<Search> with AutomaticKeepAliveClientMixin {
+  String _queryString = "";
+
+
+  // Show query results on screen
+  Future<List<Course>>? _queryResults;
+  late SearchService _courseSearchService;
+
   @override
-  bool get wantKeepAlive => true;
+  void initState() {
+    super.initState();
+    _courseSearchService = SearchService(
+      searchServiceConn["host"] as String,
+      searchServiceConn["port"] as String,
+      getGRPCCallOptions(),
+    );
+  }
+
+  Future<void> _getQueryResults() async {
+    try {
+      setState(() {
+        _queryResults = _courseSearchService.query(_queryString);
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Widget _buildSearchBar() {
     return TextField(
       autofocus: true,
+      onEditingComplete: () {
+        print(_queryString);
+        FocusScope.of(context).unfocus();
+        _getQueryResults();
+      },
+      onChanged: (value) {
+        print("Value: $value");
+        _queryString = value;
+      },
       decoration: InputDecoration(
         prefixIcon: const Icon(
           Icons.search,
@@ -50,18 +87,23 @@ class _Search extends State<Search> with AutomaticKeepAliveClientMixin {
   Widget _buildText({required String text, required Function onClick}) {
     return Builder(
       builder: (BuildContext context) {
-        return Text(
-          text,
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.black54,
-              ),
+        return Column(
+          children: [
+            Text(
+              text,
+              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                  ),
+            ),
+            const SizedBox(height: 8),
+          ],
         );
       },
     );
   }
 
-  Widget _buildTopSearches() {
+  Widget _buildTopSearches({required Future<List<String>> searchesFuture}) {
     return Builder(
       builder: (BuildContext context) {
         return SizedBox(
@@ -77,35 +119,24 @@ class _Search extends State<Search> with AutomaticKeepAliveClientMixin {
                     ?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              _buildText(
-                text: "CIS Courses",
-                onClick: () {},
-              ),
-              const SizedBox(height: 8),
-              _buildText(
-                text: "ACCA Courses",
-                onClick: () {},
-              ),
-              const SizedBox(height: 8),
-              _buildText(
-                text: "CFA Courses",
-                onClick: () {},
-              ),
-              const SizedBox(height: 8),
-              _buildText(
-                text: "CIMA Courses",
-                onClick: () {},
-              ),
-              const SizedBox(height: 8),
-              _buildText(
-                text: "CISI Courses",
-                onClick: () {},
-              ),
-              const SizedBox(height: 8),
-              _buildText(
-                text: "CIS Courses",
-                onClick: () {},
-              ),
+              FutureBuilder(
+                  future: searchesFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return const Center(child: Text("Error"));
+                    } else {
+                      return Column(
+                        children: [
+                          ...snapshot.data!
+                              .map((item) =>
+                                  _buildText(text: item, onClick: () {}))
+                              .toList(),
+                        ],
+                      );
+                    }
+                  }),
             ],
           ),
         );
@@ -169,27 +200,88 @@ class _Search extends State<Search> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  Widget _buildFeaturedCourses() {
-    return SizedBox(
-      height: 195,
-      child: CarouselSlider.builder(
-        itemCount: mockData().length,
-        options: CarouselOptions(
-          height: 400,
-          padEnds: false,
-          initialPage: 0,
-          autoPlay: false,
-          viewportFraction: 0.95,
-          pageSnapping: false,
-          enableInfiniteScroll: false,
-          scrollDirection: Axis.horizontal,
-        ),
-        itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) {
-          return FeaturedVideo(
-            courseItem: mockData()[itemIndex],
+  Widget _buildFeaturedCourses(
+      {required Future<List<Video>> featuredCoursesFuture}) {
+    return FutureBuilder(
+      future: featuredCoursesFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SizedBox(
+            height: 195,
+            child: Center(child: CircularProgressIndicator()),
           );
-        },
-      ),
+        } else {
+          return SizedBox(
+            height: 195,
+            child: CarouselSlider.builder(
+              itemCount: mockData().length,
+              options: CarouselOptions(
+                height: 400,
+                padEnds: false,
+                initialPage: 0,
+                autoPlay: false,
+                viewportFraction: 0.95,
+                pageSnapping: false,
+                enableInfiniteScroll: false,
+                scrollDirection: Axis.horizontal,
+              ),
+              itemBuilder:
+                  (BuildContext context, int itemIndex, int pageViewIndex) {
+                return FeaturedVideo(
+                  courseItem: mockData()[itemIndex],
+                );
+              },
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  Widget _buildSearchResultsPage() {
+    return FutureBuilder(
+      future: _queryResults,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return const Center(child: Text("Error"));
+          /* } else if (snapshot.hasData && snapshot.data!.isEmpty) { */
+          /*   return const Center(child: Text("No results found")); */
+        } else {
+          return Column(
+            children: mockData()
+                .map((item) => SearchResultItem(course: item))
+                .toList(),
+          );
+          /* return Column( */
+          /*   children: [ */
+          /*     ...snapshot.data! */
+          /*         .map((item) => SearchResultItem(course: item)) */
+          /*         .toList(), */
+          /*   ], */
+          /* ); */
+        }
+      },
+    );
+  }
+
+  Widget _buildInitialPage() {
+    return Column(
+      children: [
+        _buildTopSearches(
+          searchesFuture: _courseSearchService.getPopularSearches(),
+        ),
+        const SizedBox(height: 16),
+        _buildBrowseByCategories(),
+        const SizedBox(height: 16),
+        _buildFeaturedCourses(
+          featuredCoursesFuture: _courseSearchService.getFeaturedVideos(),
+        ),
+      ],
     );
   }
 
@@ -224,148 +316,12 @@ class _Search extends State<Search> with AutomaticKeepAliveClientMixin {
                 ),
               ),
               const SizedBox(height: 24),
-              _buildTopSearches(),
-              const SizedBox(height: 16),
-              _buildBrowseByCategories(),
-              const SizedBox(height: 16),
-              _buildFeaturedCourses(),
+              _queryResults == null
+                  ? _buildInitialPage()
+                  : _buildSearchResultsPage(),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class FeaturedVideo extends StatelessWidget {
-  final CourseItem courseItem;
-
-  const FeaturedVideo({
-    super.key,
-    required this.courseItem,
-  });
-
-  Widget _buildRating() {
-    return Builder(
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.symmetric(
-            vertical: 4,
-            horizontal: 8,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.star,
-                color: Theme.of(context).colorScheme.primary,
-                size: 16,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                courseItem.rating.toString(),
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildStudentsList() {
-    return AvatarStack(
-      height: 30,
-      avatars: courseItem.students
-          .map((e) => CachedNetworkImageProvider(e.photoUrl))
-          .toList(),
-    );
-  }
-
-  Widget _buildText() {
-    return Builder(
-      builder: (BuildContext context) {
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              courseItem.title,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const Icon(
-              size: 50,
-              color: Colors.white,
-              Icons.play_circle_filled,
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(
-                  courseItem.imageUrl,
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 8,
-            left: 12,
-            child: _buildRating(),
-          ),
-          Positioned(
-            top: 8,
-            right: 12,
-            width: 65,
-            child: _buildStudentsList(),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.center,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.black.withOpacity(1),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            child: Container(
-              height: 65,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ),
-              child: _buildText(),
-            ),
-          ),
-        ],
       ),
     );
   }
