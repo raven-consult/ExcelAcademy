@@ -8,7 +8,6 @@ import "package:firebase_storage/firebase_storage.dart";
 
 import "../service.dart";
 import "loading_indicator.dart";
-import "package:mobile/services/user.dart";
 
 User getCurrentUser() {
   return FirebaseAuth.instance.currentUser!;
