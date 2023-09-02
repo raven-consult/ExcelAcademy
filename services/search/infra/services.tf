@@ -14,7 +14,7 @@ data "google_secret_manager_secret_version" "typesense_api_key" {
 module "query" {
   source             = "../../../infra/modules/cloud-run"
   name               = "query"
-  image              = "us-docker.pkg.dev/cloudrun/container/hello"
+  image              = "us-central1-docker.pkg.dev/excel-academy-online/services/search/query:${var.tag}"
   port               = "8080"
   http2              = true
   always_on          = false
@@ -42,7 +42,7 @@ output "query_url" {
 module "indexer" {
   source             = "../../../infra/modules/cloud-run"
   name               = "indexer"
-  image              = "us-docker.pkg.dev/cloudrun/container/hello"
+  image              = "us-central1-docker.pkg.dev/excel-academy-online/services/search/indexer:${var.tag}"
   port               = "8080"
   http2              = true
   always_on          = false
