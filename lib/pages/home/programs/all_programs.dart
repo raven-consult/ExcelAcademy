@@ -5,14 +5,14 @@ import "package:mobile/services/available_programs.dart";
 
 import '../components/course_program_item.dart';
 
-class AllCategories extends StatelessWidget {
+class AllPrograms extends StatelessWidget {
   final Future<List<CourseProgramItemData>> programs;
-  final Function(CourseProgramItemData) onTapCategory;
+  final Function(CourseProgramItemData) onTapProgram;
 
-  const AllCategories({
+  const AllPrograms({
     super.key,
     required this.programs,
-    required this.onTapCategory,
+    required this.onTapProgram,
   });
 
   @override
@@ -58,7 +58,7 @@ class AllCategories extends StatelessWidget {
               return CourseProgramItem(
                   item: item,
                   onTap: () {
-                    onTapCategory(item);
+                    onTapProgram(item);
                   });
             }).toList(),
           );

@@ -1,22 +1,22 @@
 import "package:flutter/material.dart";
-import "package:mobile/pages/home/categories/category_search.dart";
 
 import "package:mobile/services/course.dart";
 import "package:mobile/services/available_programs.dart";
 
-import "all_categories.dart";
+import "all_programs.dart";
+import "programs_search.dart";
 
-class Categories extends StatefulWidget {
-  const Categories({super.key});
+class Programs extends StatefulWidget {
+  const Programs({super.key});
 
   @override
-  State<Categories> createState() => _Categories();
+  State<Programs> createState() => _Categories();
 }
 
-class _Categories extends State<Categories> with AutomaticKeepAliveClientMixin {
+class _Categories extends State<Programs> with AutomaticKeepAliveClientMixin {
   final ProgramsService _programsService = ProgramsService();
 
-  CourseProgramItemData? _selectedCategory;
+  CourseProgramItemData? _selectedProgram;
 
   late Future<List<CourseProgramItemData>> _programs;
 
@@ -39,7 +39,7 @@ class _Categories extends State<Categories> with AutomaticKeepAliveClientMixin {
           Flexible(
             child: TextField(
               decoration: InputDecoration(
-                hintText: "Find in Categories",
+                hintText: "Find in Programs",
                 focusedBorder: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                   borderSide: BorderSide(
@@ -99,7 +99,7 @@ class _Categories extends State<Categories> with AutomaticKeepAliveClientMixin {
         icon: const Icon(Icons.arrow_back),
         onPressed: () {
           setState(() {
-            _selectedCategory = null;
+            _selectedProgram = null;
           });
         },
       ),
@@ -112,9 +112,9 @@ class _Categories extends State<Categories> with AutomaticKeepAliveClientMixin {
         ),
       ],
       title: Text(
-        _selectedCategory == null
-            ? "Categories"
-            : "${_selectedCategory!.initial} Courses",
+        _selectedProgram == null
+            ? "Programs"
+            : "${_selectedProgram!.initial} Courses",
       ),
     );
   }
@@ -140,17 +140,17 @@ class _Categories extends State<Categories> with AutomaticKeepAliveClientMixin {
             child: Column(
               children: [
                 _buildSearchBar(),
-                _selectedCategory == null
+                _selectedProgram == null
                     ? const SizedBox()
-                    : CategorySearch(
-                        courses: _getProgramCourses(_selectedCategory!.id),
+                    : ProgramSearch(
+                        courses: _getProgramCourses(_selectedProgram!.id),
                       ),
-                _selectedCategory == null
-                    ? AllCategories(
+                _selectedProgram == null
+                    ? AllPrograms(
                         programs: _programs,
-                        onTapCategory: (CourseProgramItemData program) {
+                        onTapProgram: (CourseProgramItemData program) {
                           setState(() {
-                            _selectedCategory = program;
+                            _selectedProgram = program;
                           });
                         },
                       )

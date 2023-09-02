@@ -3,10 +3,10 @@ import "package:flutter/material.dart";
 import "package:mobile/services/course.dart";
 import "package:mobile/components/shimmer.dart";
 
-class CategorySearch extends StatelessWidget {
+class ProgramSearch extends StatelessWidget {
   final Future<List<Course>> courses;
 
-  const CategorySearch({
+  const ProgramSearch({
     super.key,
     required this.courses,
   });
