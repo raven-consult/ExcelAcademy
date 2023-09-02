@@ -33,7 +33,7 @@ jobs:
     if: github.event_name == 'pull_request'
 
     outputs:
-      tests: ${{ steps.changes.outputs.test }}
+      tests: ${{ steps.changes.outputs.tests }}
 
     steps:
       - id: changes
