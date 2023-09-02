@@ -76,7 +76,7 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
             icon: Icon(Icons.explore),
           ),
           BottomNavigationBarItem(
-            label: "Category",
+            label: "Programs",
             icon: Icon(Icons.category),
           ),
           BottomNavigationBarItem(
