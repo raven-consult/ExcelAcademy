@@ -1,5 +1,6 @@
 import axios from "axios";
 import {faker} from "@faker-js/faker";
+import {getRandomInt, getRandomItem} from "./random";
 import * as admin from "firebase-admin";
 import {createClient, ErrorResponse} from "pexels";
 
@@ -8,7 +9,7 @@ admin.initializeApp({
   storageBucket: "excel-academy-online.appspot.com",
 });
 
-const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
+const PEXELS_API_KEY = process.env.PEXELS_API_KEY || "";
 
 const pexels = createClient(PEXELS_API_KEY);
 
@@ -140,6 +141,19 @@ async function addUserToCourse(courseId: string, userId: string) {
 }
 
 async function main() {
+
+  const query = await pexels.videos.search({query: "business", per_page: 20});
+
+  if (isErrorResponse(query)) {
+    throw new Error(query.error);
+  }
+
+  if (query.videos.length == 0) {
+    throw new Error("No photos found");
+  }
+
+  const videourls = query.videos.map(video => video.video_files[0].link);
+
   const courses = await Promise.all<string>(Array.from({length: 3}).map(async () => {
     // Create course
     const course = await createCourse(
@@ -164,7 +178,7 @@ async function main() {
 
       const videoId = createID();
       const file = storage.file(`courses/${course}/videos/${videoId}.mp4`);
-      const video = query.videos[0].video_files[0].link;
+      const video = getRandomItem<string>(videourls);
       const res = await axios.get(video, {responseType: "stream"})
 
       console.log("Uploading video");
