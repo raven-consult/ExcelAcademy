@@ -44,7 +44,7 @@ module "indexer" {
   name               = "indexer"
   image              = "us-central1-docker.pkg.dev/excel-academy-online/services/search/indexer:${var.tag}"
   port               = "8080"
-  http2              = true
+  http2              = false
   always_on          = false
   mem_size           = "small"
   private_vpc_access = true
