@@ -50,6 +50,7 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
   }
 
   Future<void> _onSignup() async {
+    print(_phoneNumber);
     await _loginService.signUpWithPassword(
       _fullName,
       _emailAddress,
@@ -347,12 +348,12 @@ class _UserSetup extends State<UserSetup> with TickerProviderStateMixin {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 width: double.infinity,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       "What’s your email",
                       style: TextStyle(fontSize: 40),

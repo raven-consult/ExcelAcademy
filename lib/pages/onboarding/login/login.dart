@@ -55,11 +55,11 @@ class _Login extends State<Login> {
   }
 
   Widget _topSection() {
-    return SizedBox(
+    return const SizedBox(
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text("Welcome back!", style: TextStyle(fontSize: 40)),
           SizedBox(height: 4),
           Text(

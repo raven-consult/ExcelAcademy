@@ -328,65 +328,66 @@ class _MyLearning extends State<MyLearning>
     );
   }
 
-  Widget _buildBookmarkedCourseItem() {
-    return Container(
-      height: 125,
-      padding: const EdgeInsets.symmetric(
-        vertical: 8,
-      ),
-      decoration: ShapeDecoration(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: BorderSide(
-            color: Colors.grey.shade300,
-            width: 1.5,
-          ),
-        ),
-        color: Colors.white,
-      ),
-      margin: const EdgeInsets.symmetric(
-        horizontal: 4,
-        vertical: 4,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Expanded(
-            flex: 2,
-            child: FlutterLogo(
-              size: 70,
-            ),
-          ),
-          Expanded(
-            flex: 4,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Strategic Financial Management",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                Text(
-                  "2hrs 30mins",
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              child: const Icon(Icons.bookmark_border),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // TODO: Cleanup
+  /* Widget _buildBookmarkedCourseItem() { */
+  /*   return Container( */
+  /*     height: 125, */
+  /*     padding: const EdgeInsets.symmetric( */
+  /*       vertical: 8, */
+  /*     ), */
+  /*     decoration: ShapeDecoration( */
+  /*       shape: RoundedRectangleBorder( */
+  /*         borderRadius: BorderRadius.circular(8), */
+  /*         side: BorderSide( */
+  /*           color: Colors.grey.shade300, */
+  /*           width: 1.5, */
+  /*         ), */
+  /*       ), */
+  /*       color: Colors.white, */
+  /*     ), */
+  /*     margin: const EdgeInsets.symmetric( */
+  /*       horizontal: 4, */
+  /*       vertical: 4, */
+  /*     ), */
+  /*     child: Row( */
+  /*       crossAxisAlignment: CrossAxisAlignment.start, */
+  /*       children: [ */
+  /*         const Expanded( */
+  /*           flex: 2, */
+  /*           child: FlutterLogo( */
+  /*             size: 70, */
+  /*           ), */
+  /*         ), */
+  /*         Expanded( */
+  /*           flex: 4, */
+  /*           child: Column( */
+  /*             crossAxisAlignment: CrossAxisAlignment.start, */
+  /*             children: [ */
+  /*               Text( */
+  /*                 "Strategic Financial Management", */
+  /*                 style: Theme.of(context).textTheme.titleLarge, */
+  /*               ), */
+  /*               const SizedBox( */
+  /*                 height: 6, */
+  /*               ), */
+  /*               Text( */
+  /*                 "2hrs 30mins", */
+  /*                 style: Theme.of(context).textTheme.titleMedium, */
+  /*               ), */
+  /*             ], */
+  /*           ), */
+  /*         ), */
+  /*         Expanded( */
+  /*           flex: 1, */
+  /*           child: Container( */
+  /*             padding: const EdgeInsets.all(8), */
+  /*             child: const Icon(Icons.bookmark_border), */
+  /*           ), */
+  /*         ), */
+  /*       ], */
+  /*     ), */
+  /*   ); */
+  /* } */
 
   Widget _buildTabBarLayout(Future<List<UserCourse>> itemsFuture) {
     return Container(

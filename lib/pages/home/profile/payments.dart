@@ -18,9 +18,9 @@ class _Payments extends State<Payments> {
                 Theme.of(context).colorScheme.primary.withOpacity(0.4),
             child: const Text("AC", style: TextStyle(color: Colors.white)),
           ),
-          title: Column(
+          title: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text("Category: ICAN"),
               SizedBox(height: 4),
               Text("ICAN Public Sector Accounting and Finance"),

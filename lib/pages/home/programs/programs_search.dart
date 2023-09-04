@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 import "package:mobile/services/course.dart";
-import "package:mobile/components/shimmer.dart";
+// import "package:mobile/components/shimmer.dart";
 
 class ProgramSearch extends StatelessWidget {
   final Future<List<Course>> courses;
@@ -88,26 +88,27 @@ class ProgramSearch extends StatelessWidget {
     );
   }
 
-  Widget _buildLoading() {
-    return GridView.count(
-      shrinkWrap: true,
-      crossAxisCount: 2,
-      childAspectRatio: 0.7,
-      physics: const NeverScrollableScrollPhysics(),
-      children: List.generate(
-        5,
-        (index) {
-          return Container(
-            margin: const EdgeInsets.symmetric(
-              vertical: 6,
-              horizontal: 6,
-            ),
-            child: ShimmerWidget.rectangular(),
-          );
-        },
-      ),
-    );
-  }
+  // TODO: Cleanup
+  /* Widget _buildLoading() { */
+  /*   return GridView.count( */
+  /*     shrinkWrap: true, */
+  /*     crossAxisCount: 2, */
+  /*     childAspectRatio: 0.7, */
+  /*     physics: const NeverScrollableScrollPhysics(), */
+  /*     children: List.generate( */
+  /*       5, */
+  /*       (index) { */
+  /*         return Container( */
+  /*           margin: const EdgeInsets.symmetric( */
+  /*             vertical: 6, */
+  /*             horizontal: 6, */
+  /*           ), */
+  /*           child: ShimmerWidget.rectangular(), */
+  /*         ); */
+  /*       }, */
+  /*     ), */
+  /*   ); */
+  /* } */
 
   Widget _buildProgramCourses() {
     return GridView.count(

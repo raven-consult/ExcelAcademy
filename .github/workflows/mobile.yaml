@@ -69,8 +69,17 @@ jobs:
         with:
           channel: "stable"
 
+      - name: Install protobuf
+        run: sudo apt install protobuf-compiler
+
       - name: Install Dependencies
         run: flutter pub get
+
+      - name: Install Dart protoc plugin
+        run: dart pub global activate protoc_plugin
+
+      - name: Generate protos
+        run: scripts/generate_protos.sh
 
       - name: Linting
         run: flutter analyze
