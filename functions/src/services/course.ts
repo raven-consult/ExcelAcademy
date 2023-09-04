@@ -18,7 +18,7 @@ export const onCourseCreate = functions
     const courseData = snapshot.data() as Course;
 
     await Promise.all([
-      updateSearchIndex(courseData),
+      updateSearchIndex({ ...courseData, courseId: courseRef }),
       addCourseToRecommendations(courseRef),
     ]);
   });
