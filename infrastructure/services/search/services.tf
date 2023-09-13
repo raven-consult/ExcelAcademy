@@ -12,7 +12,7 @@ data "google_secret_manager_secret_version" "typesense_api_key" {
 }
 
 module "query" {
-  source             = "../../../infra/modules/cloud-run"
+  source             = "../../modules/cloud-run"
   name               = "query"
   image              = "us-central1-docker.pkg.dev/excel-academy-online/services/search/query:${var.tag}"
   port               = "8080"
@@ -40,7 +40,7 @@ output "query_url" {
 }
 
 module "indexer" {
-  source             = "../../../infra/modules/cloud-run"
+  source             = "../../modules/cloud-run"
   name               = "indexer"
   image              = "us-central1-docker.pkg.dev/excel-academy-online/services/search/indexer:${var.tag}"
   port               = "8080"

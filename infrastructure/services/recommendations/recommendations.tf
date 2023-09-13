@@ -1,5 +1,5 @@
 module "cloud_run_grpc" {
-  source    = "../../../infra/modules/cloud-run"
+  source    = "../../modules/cloud-run"
   name      = "recommendations"
   image     = "us-central1-docker.pkg.dev/excel-academy-online/services/recommendations:${var.tag}"
   port      = "8080"
