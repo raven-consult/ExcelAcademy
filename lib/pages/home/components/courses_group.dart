@@ -1,9 +1,7 @@
 import "package:flutter/material.dart";
 
-import "package:avatar_stack/avatar_stack.dart";
 import "package:cached_network_image/cached_network_image.dart";
 
-import "package:mobile/services/user.dart";
 import "package:mobile/services/course.dart";
 
 class CoursesGroup extends StatelessWidget {
@@ -111,7 +109,7 @@ class CoursesGroup extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          FutureBuilder<List<Course>>(
+          FutureBuilder(
             future: courseItems,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -150,7 +148,7 @@ class CourseCard extends StatelessWidget {
 
   void _onClick(BuildContext context) {
     Navigator.of(context).pushNamed(
-      "course_detail",
+      "course_view",
       arguments: item,
     );
   }
@@ -160,87 +158,105 @@ class CourseCard extends StatelessWidget {
     return InkWell(
       onTap: () => _onClick(context),
       child: Container(
-        height: 230,
         width: 265,
         margin: const EdgeInsets.only(right: 12, bottom: 12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(6),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 100,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(6),
-                  topRight: Radius.circular(6),
-                ),
-                image: DecorationImage(
-                  image: CachedNetworkImageProvider(item.thumbnailUrl),
-                  fit: BoxFit.cover,
+        child: Material(
+          elevation: 1,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 100,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(6),
+                    topRight: Radius.circular(6),
+                  ),
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(item.thumbnailUrl),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                item.title,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-            ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4, left: 8, right: 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    flex: 2,
-                    child: GestureDetector(
-                      onTap: () {
-                        print("Pressed");
-                      },
-                      child: Text(
-                        "Add to Cart",
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+              const SizedBox(height: 4),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text(
+                  item.title,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
+                ),
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4, left: 8, right: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.group,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "${item.students.length.round()} students",
+                        ),
+                      ],
                     ),
-                  ),
-                  FutureBuilder(
-                    future: Future.wait(item.students.map((student) async {
-                      var user = await PlatformUser.getUser(student);
-                      return CachedNetworkImageProvider(user.photoUrl);
-                    }).toList()),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Text("0");
-                      } else if (snapshot.hasError) {
-                        return const Text("0");
-                      } else {
-                        return Flexible(
-                          flex: 2,
-                          child: AvatarStack(
-                            height: 30,
-                            avatars: snapshot.data,
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  Flexible(
-                    fit: FlexFit.tight,
-                    child: Row(
+                    /* item.students.isNotEmpty */
+                    /*     ? FutureBuilder( */
+                    /*         future: */
+                    /*             Future.wait(item.students.map((student) async { */
+                    /*           var user = await PlatformUser.getUser(student); */
+                    /*           return CachedNetworkImageProvider(user.photoUrl); */
+                    /*         }).toList()), */
+                    /*         builder: */
+                    /*             (BuildContext context, AsyncSnapshot snapshot) { */
+                    /*           if (snapshot.connectionState == */
+                    /*               ConnectionState.waiting) { */
+                    /*             return const Text("0"); */
+                    /*           } else if (snapshot.hasError) { */
+                    /*             print(snapshot.error); */
+                    /*             return const Text("0"); */
+                    /*           } else { */
+                    /*             return Flexible( */
+                    /*               flex: 1, */
+                    /*               child: AvatarStack( */
+                    /*                 height: 30, */
+                    /*                 avatars: snapshot.data, */
+                    /*               ), */
+                    /*             ); */
+                    /*           } */
+                    /*         }, */
+                    /*       ) */
+                    /*     : Container(), */
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4, left: 8, right: 8),
+                child: Row(
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.attach_money,
+                        ),
+                        Text(item.price.toString()),
+                      ],
+                    ),
+                    const SizedBox(width: 24),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Icon(
@@ -253,11 +269,11 @@ class CourseCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -282,103 +298,62 @@ const englishSubtitle = Subtitle(
   imageUrl: "https://picsum.photos/300",
 );
 
-class CourseItem {
-  final String id;
-  final String title;
-  final double rating;
-  final String imageUrl;
-  final Subtitle? subtitle;
-  final List<PlatformUser> students;
-
-  const CourseItem({
-    required this.id,
-    required this.title,
-    required this.rating,
-    required this.imageUrl,
-    required this.students,
-    required this.subtitle,
-  });
-}
-
-// "https://i.pravatar.cc/150?img=$n
-
-List<CourseItem> mockData() {
+List<Course> mockData() {
   return const [
-    CourseItem(
+    Course(
       id: "2",
       title: "Flutter Course",
+      description: "This is a course about Flutter",
+      price: 100,
       rating: 4.5,
-      imageUrl: "https://picsum.photos/206",
-      subtitle: englishSubtitle,
-      students: [
-        PlatformUser(
-          uid: "1",
-          displayName: "John Doe",
-          photoUrl: "https://picsum.photos/207",
-        ),
-        PlatformUser(
-          uid: "2",
-          displayName: "John Doe",
-          photoUrl: "https://picsum.photos/208",
-        ),
-      ],
+      reviews: [],
+      thumbnailUrl: "https://picsum.photos/206",
+      students: [],
+      videos: [],
     ),
-    CourseItem(
-      id: "2",
-      title: "Flutter Course",
-      rating: 4.5,
-      imageUrl: "https://picsum.photos/205",
-      subtitle: englishSubtitle,
-      students: [
-        PlatformUser(
-          uid: "3",
-          displayName: "John Doe",
-          photoUrl: "https://picsum.photos/201",
-        ),
-        PlatformUser(
-          uid: "4",
-          displayName: "John Doe",
-          photoUrl: "https://picsum.photos/200",
-        ),
-      ],
-    ),
-    CourseItem(
+    Course(
       id: "3",
-      title: "Flutter Course",
-      rating: 4.1,
-      imageUrl: "https://picsum.photos/204",
-      subtitle: null,
-      students: [
-        PlatformUser(
-          uid: "5",
-          displayName: "John Doe",
-          photoUrl: "https://picsum.photos/202",
-        ),
-        PlatformUser(
-          uid: "6",
-          displayName: "John Doe",
-          photoUrl: "https://picsum.photos/203",
-        ),
-      ],
-    ),
-    CourseItem(
-      id: "3",
-      title: "Flutter Course",
+      title: "React Course",
+      description: "This is a course about React",
+      price: 100,
       rating: 4.5,
-      imageUrl: "https://picsum.photos/204",
-      subtitle: null,
-      students: [
-        PlatformUser(
-          uid: "7",
-          displayName: "John Doe",
-          photoUrl: "https://picsum.photos/202",
-        ),
-        PlatformUser(
-          uid: "8",
-          displayName: "John Doe",
-          photoUrl: "https://picsum.photos/203",
-        ),
-      ],
+      reviews: [],
+      thumbnailUrl: "https://picsum.photos/207",
+      students: [],
+      videos: [],
+    ),
+    Course(
+      id: "4",
+      title: "Vue Course",
+      description: "This is a course about Vue",
+      price: 100,
+      rating: 4.5,
+      reviews: [],
+      thumbnailUrl: "https://picsum.photos/208",
+      students: [],
+      videos: [],
+    ),
+    Course(
+      id: "5",
+      title: "Angular Course",
+      description: "This is a course about Angular",
+      price: 100,
+      rating: 4.5,
+      reviews: [],
+      thumbnailUrl: "https://picsum.photos/209",
+      students: [],
+      videos: [],
+    ),
+    Course(
+      id: "6",
+      title: "Dart Course",
+      description: "This is a course about Dart",
+      price: 100,
+      rating: 4.5,
+      reviews: [],
+      thumbnailUrl: "https://picsum.photos/210",
+      students: [],
+      videos: [],
     ),
   ];
 }

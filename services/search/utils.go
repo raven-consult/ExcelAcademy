@@ -8,9 +8,7 @@ import (
 
 	firebase "firebase.google.com/go/v4"
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
-	status "google.golang.org/grpc/status"
 )
 
 func IsDev() bool {
@@ -27,7 +25,7 @@ func Getenv(key, fallback string) string {
 
 type UserId string
 
-const userId UserId = "userId"
+const UserIdKey UserId = "userId"
 
 type Authorize func(context.Context, string) (string, error)
 
@@ -41,11 +39,13 @@ func GetUnaryAuthorizer(authorize Authorize) grpc.UnaryServerInterceptor {
 
 		id, err := authorize(ctx, info.FullMethod)
 		if err != nil {
-			return nil, status.Errorf(codes.Unauthenticated, err.Error())
+			cctx := context.WithValue(ctx, UserIdKey, "")
+			return handler(cctx, req)
+		} else {
+			cctx := context.WithValue(ctx, UserIdKey, id)
+			return handler(cctx, req)
 		}
 
-		cctx := context.WithValue(ctx, userId, id)
-		return handler(cctx, req)
 	}
 }
 

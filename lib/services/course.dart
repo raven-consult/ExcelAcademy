@@ -41,6 +41,7 @@ class Course {
 
     // Get the course data
     var data = res.data() as Map<String, dynamic>;
+    data["id"] = id;
 
     return Course.fromMap(data);
   }

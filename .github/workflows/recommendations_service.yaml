@@ -36,7 +36,7 @@ jobs:
               - "services/recommendations/*.go"
               - "services/recommendations/Dockerfile"
             infra:
-              - "infrastructure/services/recommendations/**""
+              - "infrastructure/services/recommendations/**"
   test:
     name: Pull Request Test
     needs: determine_build

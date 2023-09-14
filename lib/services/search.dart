@@ -27,11 +27,10 @@ class SearchService {
         .toList());
   }
 
-  Future<List<String>> getPopularSearches() async {
-    throw Exception("Not Implemented");
-  }
+  Future<List<String>> getPreviousSearches(String userId) async {
+    var req = GetPreviousSearchesRequest(userId: userId);
+    var res = await _client.getPreviousSearches(req);
 
-  Future<List<Video>> getFeaturedVideos() async {
-    throw Exception("Not Implemented");
+    return res.queries;
   }
 }

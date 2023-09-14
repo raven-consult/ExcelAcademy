@@ -4,10 +4,19 @@ option go_package = "excel_academy/service/search";
 
 service SearchService {
   rpc Query(QueryRequest) returns (QueryResponse) {}
+  rpc GetPreviousSearches(GetPreviousSearchesRequest) returns (GetPreviousSearchesResponse) {}
 }
 
 message QueryRequest {
   string query = 1;
+}
+
+message GetPreviousSearchesRequest {
+  string user_id = 1;
+}
+
+message GetPreviousSearchesResponse {
+  repeated string queries = 1;
 }
 
 message QueryResponse {

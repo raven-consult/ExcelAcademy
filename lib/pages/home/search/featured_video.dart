@@ -3,10 +3,11 @@ import "package:flutter/material.dart";
 import "package:avatar_stack/avatar_stack.dart";
 import "package:cached_network_image/cached_network_image.dart";
 
-import "../components/courses_group.dart";
+import "package:mobile/services/user.dart";
+import "package:mobile/services/course.dart";
 
 class FeaturedVideo extends StatelessWidget {
-  final CourseItem courseItem;
+  final Course courseItem;
 
   const FeaturedVideo({
     super.key,
@@ -47,11 +48,24 @@ class FeaturedVideo extends StatelessWidget {
   }
 
   Widget _buildStudentsList() {
-    return AvatarStack(
-      height: 30,
-      avatars: courseItem.students
-          .map((e) => CachedNetworkImageProvider(e.photoUrl))
-          .toList(),
+    var users = courseItem.students.map((e) async {
+      var user = await PlatformUser.getUser(e);
+      return user;
+    }).toList();
+    return FutureBuilder(
+      future: Future.wait(users),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return AvatarStack(
+            height: 30,
+            avatars: snapshot.data!.map((e) {
+              return CachedNetworkImageProvider(e.photoUrl);
+            }).toList(),
+          );
+        } else {
+          return Container();
+        }
+      },
     );
   }
 
@@ -95,7 +109,7 @@ class FeaturedVideo extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: CachedNetworkImageProvider(
-                  courseItem.imageUrl,
+                  courseItem.thumbnailUrl,
                 ),
                 fit: BoxFit.cover,
               ),

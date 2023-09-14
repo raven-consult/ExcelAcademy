@@ -1,8 +1,9 @@
 import "package:flutter/material.dart";
 
+import "package:mobile/pages/onboarding/onboarding.dart";
+
 import "layout.dart";
 import "search/search.dart";
-import "package:mobile/pages/onboarding/onboarding.dart";
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -28,7 +29,9 @@ class _HomeRouter extends State<HomeRouter> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return const Search();
+          return Search(
+            gotoCart: _gotoCart,
+          );
         },
       ),
     );

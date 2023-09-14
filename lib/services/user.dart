@@ -26,8 +26,8 @@ class PlatformUser {
     var data = doc.data();
     return PlatformUser(
       uid: uid,
-      photoUrl: data!["photoUrl"],
-      displayName: data["displayName"],
+      photoUrl: data!["photoUrl"] ?? "",
+      displayName: data["displayName"] ?? "",
     );
   }
 }
