@@ -33,8 +33,6 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.1.8",
-    "@angular/cli": "~16.1.4",
-    "@angular/compiler-cli": "^16.1.0",
     "@types/fluent-ffmpeg": "^2.1.21",
     "@types/jasmine": "~4.3.0",
     "jasmine-core": "~4.6.0",
