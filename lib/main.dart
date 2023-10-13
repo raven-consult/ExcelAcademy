@@ -14,6 +14,7 @@ import "package:flutter_native_splash/flutter_native_splash.dart";
 import "theme/theme.dart";
 import "theme/color.dart";
 import "firebase_options.dart";
+import "services/notifications.dart";
 
 import "pages/home/home.dart";
 import "pages/onboarding/onboarding.dart";
@@ -81,6 +82,9 @@ class ExcelAcademy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FlutterNativeSplash.remove();
+
+    initializeNotifications();
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,

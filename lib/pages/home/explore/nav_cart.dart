@@ -6,7 +6,7 @@ import "package:firebase_auth/firebase_auth.dart";
 
 import "package:mobile/services/cart.dart";
 import "package:mobile/components/shimmer.dart";
-import "package:mobile/services/notification.dart";
+import "package:mobile/services/notifications.dart";
 
 class NavCart extends StatefulWidget {
   final Function goToCart;
@@ -56,8 +56,8 @@ class _NavCart extends State<NavCart> {
 
   Future<void> _getNotifications() async {
     var currentUser = FirebaseAuth.instance.currentUser;
-    var notificationService = NotificationService(currentUser!.uid);
-    var userNotifications = await notificationService.getAllNotifications();
+    var userNotifications =
+        await NotificationService.getMyNotifications(currentUser!.uid);
     setState(() {
       _totalNotifications = userNotifications.length;
     });
