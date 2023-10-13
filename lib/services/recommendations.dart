@@ -1,11 +1,12 @@
 import "package:grpc/grpc.dart";
+import "package:flutter_dotenv/flutter_dotenv.dart";
 
 import "package:mobile/services/course.dart";
 import "package:mobile/services/generated/services/recommendations/recommendations.pbgrpc.dart";
 
-const Map<String, String> recommendationsServiceConn = {
-  "host": "recommendations-gdw5iipadq-uc.a.run.app",
-  "port": "443"
+Map<String, String> recommendationsServiceConn = {
+  "host": dotenv.env["RECOMMENDATIONS"] ?? "localhost",
+  "port": dotenv.env["RECOMMENDATIONS_PORT"] ?? "443",
 };
 
 class RecommendationService {

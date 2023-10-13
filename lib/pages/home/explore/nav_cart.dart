@@ -46,8 +46,8 @@ class _NavCart extends State<NavCart> {
 
   Future<void> _getCartItems() async {
     var currentUser = FirebaseAuth.instance.currentUser;
-    var cartService = CartService(currentUser!.uid);
-    var cartItems = await cartService.getCartItems();
+    var cartUser = await CartUser.getUser(currentUser!.uid);
+    var cartItems = await cartUser.getCartItems();
     setState(() {
       _totalCartItems = cartItems.length;
     });

@@ -6,11 +6,11 @@ import "package:mobile/services/available_programs.dart";
 import '../components/course_program_item.dart';
 
 class CourseProgramsList extends StatefulWidget {
-  final Function gotoCategories;
+  final Function gotoPrograms;
 
   const CourseProgramsList({
     super.key,
-    required this.gotoCategories,
+    required this.gotoPrograms,
   });
 
   @override
@@ -106,7 +106,7 @@ class _CourseProgramsList extends State<CourseProgramsList> {
         const SizedBox(height: 8),
         GestureDetector(
           onTap: () {
-            widget.gotoCategories();
+            widget.gotoPrograms();
           },
           child: Container(
             height: 50,

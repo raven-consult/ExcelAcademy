@@ -91,7 +91,6 @@ class _Categories extends State<Programs> with AutomaticKeepAliveClientMixin {
   Widget _buildAppBar(BuildContext context) {
     return SliverAppBar(
       elevation: Theme.of(context).appBarTheme.elevation,
-      centerTitle: Theme.of(context).appBarTheme.centerTitle,
       toolbarHeight: Theme.of(context).appBarTheme.toolbarHeight ?? 70,
       foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
       backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -103,14 +102,7 @@ class _Categories extends State<Programs> with AutomaticKeepAliveClientMixin {
           });
         },
       ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.shopping_cart),
-          onPressed: () {
-            print("Shopping");
-          },
-        ),
-      ],
+      centerTitle: false,
       title: Text(
         _selectedProgram == null
             ? "Programs"

@@ -1,50 +1,77 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class CartService {
-  final String _userId;
+import 'package:mobile/services/user.dart';
+import 'package:mobile/services/course.dart';
 
-  final String _collectionId = "cart";
-  final String _userCollectionId = "users";
-  final FirebaseFirestore _client = FirebaseFirestore.instance;
+// CartItem is the course id
+typedef CartItem = String;
 
-  CartService(this._userId);
+class CartUser extends PlatformUser {
+  final List<CartItem> cartItems;
 
-  Future<void> addToCart(CartItem item) async {
-    var userRef = _client.collection(_userCollectionId).doc(_userId);
-    var cartRef = userRef.collection(_collectionId);
+  const CartUser({
+    required String uid,
+    required this.cartItems,
+    required String photoUrl,
+    required String displayName,
+  }) : super(
+          uid: uid,
+          photoUrl: photoUrl,
+          displayName: displayName,
+        );
 
-    await cartRef.doc(item.id).set({
-      "id": item.id,
-    }, SetOptions(merge: true));
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'photoUrl': photoUrl,
+      'cartItems': cartItems,
+      'displayName': displayName,
+    };
+  }
+
+  static Future<CartUser> getUser(String uid) async {
+    final doc =
+        await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    if (!doc.exists) {
+      throw const UserException("User does not exist");
+    }
+    var data = doc.data();
+    return CartUser(
+      uid: uid,
+      photoUrl: data!["photoUrl"] ?? "",
+      displayName: data["displayName"] ?? "",
+      cartItems: data["cartItems"] ?? [],
+    );
+  }
+
+  Future addToCart(CartItem item) async {
+    cartItems.add(item);
+
+    await FirebaseFirestore.instance.collection("users").doc(uid).update({
+      "cartItems": FieldValue.arrayUnion([item])
+    });
+  }
+
+  Future<List<Course>> getCartItems() async {
+    return Future.wait(cartItems.map((e) {
+      return Course.fromId(e);
+    }));
+  }
+
+  Future<void> clearCart() async {
+    cartItems.clear();
+
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .update({"cartItems": FieldValue.delete()});
   }
 
   Future<void> removeFromCart(CartItem item) async {
-    var userRef = _client.collection(_userCollectionId).doc(_userId);
-    var cartRef = userRef.collection(_collectionId);
+    cartItems.remove(item);
 
-    await cartRef.doc(item.id).delete();
-  }
-
-  Future<List<CartItem>> getCartItems() async {
-    var userRef = _client.collection(_userCollectionId).doc(_userId);
-    var cartRef = userRef.collection(_collectionId);
-
-    var snapshot = await cartRef.get();
-
-    return snapshot.docs.map((e) => CartItem.fromMap(e.data())).toList();
-  }
-}
-
-class CartItem {
-  final String id;
-
-  const CartItem({
-    required this.id,
-  });
-
-  factory CartItem.fromMap(Map<String, dynamic> map) {
-    return CartItem(
-      id: map["id"],
-    );
+    await FirebaseFirestore.instance.collection("users").doc(uid).update({
+      "cartItems": FieldValue.arrayRemove([item])
+    });
   }
 }

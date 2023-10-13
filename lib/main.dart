@@ -6,6 +6,7 @@ import "package:flutter/foundation.dart";
 
 import "package:firebase_core/firebase_core.dart";
 import "package:firebase_auth/firebase_auth.dart";
+import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_crashlytics/firebase_crashlytics.dart";
 import "package:flutter_native_splash/flutter_native_splash.dart";
@@ -25,6 +26,9 @@ Future<bool> isUserSignedIn() async {
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  // Load environment variables
+  await dotenv.load(fileName: ".env");
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

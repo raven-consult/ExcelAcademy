@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+
 import "package:circular_chart_flutter/circular_chart_flutter.dart";
 
 import "package:mobile/components/shimmer.dart";
@@ -38,14 +39,7 @@ class _MyLearning extends State<MyLearning>
           print("Hello");
         },
       ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () {
-            print("Search");
-          },
-        ),
-      ],
+      centerTitle: false,
       title: const Text("My Learning"),
     );
   }

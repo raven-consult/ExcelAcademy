@@ -51,6 +51,10 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.2.19
   circular_chart_flutter: ^0.0.2
+  flutter_paystack: ^1.0.7
+  money_formatter: ^0.0.3
+  http: ^0.13.6
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -83,9 +87,11 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - .env
     - assets/
     - assets/logo/
     - assets/pages/
+    - assets/pages/cart/
     - assets/pages/homepage/
     - assets/pages/onboarding/
     - assets/pages/onboarding/reset_password/

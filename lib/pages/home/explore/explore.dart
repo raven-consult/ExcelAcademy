@@ -1,6 +1,10 @@
 import "package:flutter/material.dart";
 
+import "package:provider/provider.dart";
+
+import "../home_tabs_navigator.dart";
 import "package:mobile/utils/grpc.dart";
+import "../components/courses_group.dart";
 import "package:mobile/services/recommendations.dart";
 
 import "search.dart";
@@ -9,25 +13,18 @@ import "ad_panel.dart";
 import "user_greeter.dart";
 import "ongoing_course.dart";
 import "course_programs_list.dart";
-import "../components/courses_group.dart";
 
 class Explore extends StatefulWidget {
-  final Function gotoCart;
   final Function gotoLogin;
   final Function gotoSearch;
   final Function gotoRegister;
-  final Function gotoCategories;
-  final Function gotoMyLearning;
   final Function gotoNotification;
 
   const Explore({
     super.key,
-    required this.gotoCart,
     required this.gotoLogin,
     required this.gotoSearch,
     required this.gotoRegister,
-    required this.gotoCategories,
-    required this.gotoMyLearning,
     required this.gotoNotification,
   });
 
@@ -60,8 +57,8 @@ class _Explore extends State<Explore> with AutomaticKeepAliveClientMixin {
             ),
             const SizedBox(height: 8),
             NavCart(
-              goToCart: widget.gotoCart,
               goToNotifications: widget.gotoNotification,
+              goToCart: context.read<HomeTabsController>().gotoCart,
             ),
             const SizedBox(height: 24),
             Search(
@@ -71,11 +68,11 @@ class _Explore extends State<Explore> with AutomaticKeepAliveClientMixin {
             const AdPanel(),
             const SizedBox(height: 24),
             CourseProgramsList(
-              gotoCategories: widget.gotoCategories,
+              gotoPrograms: context.read<HomeTabsController>().gotoPrograms,
             ),
             const SizedBox(height: 24),
             OngoingCourse(
-              gotoMyLearning: widget.gotoMyLearning,
+              gotoMyLearning: context.read<HomeTabsController>().gotoMyLearning,
             ),
             const SizedBox(height: 24),
             CoursesGroup(

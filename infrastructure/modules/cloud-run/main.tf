@@ -25,8 +25,8 @@ resource "google_cloud_run_service" "default" {
               subnetwork = "default"
             },
           ]
-        ) : ""
-        "run.googleapis.com/vpc-access-egress" = var.private_vpc_access == true ? "private-ranges-only" : ""
+        ) : null
+        "run.googleapis.com/vpc-access-egress" = var.private_vpc_access == true ? "private-ranges-only" : null
       }
     }
     spec {
@@ -68,7 +68,7 @@ resource "google_cloud_run_service" "default" {
     annotations = {
       generated-by                      = "terraform"
       "run.googleapis.com/ingress"      = "all"
-      "run.googleapis.com/launch-stage" = var.private_vpc_access == true ? "BETA" : ""
+      "run.googleapis.com/launch-stage" = var.private_vpc_access == true ? "BETA" : null
     }
   }
 

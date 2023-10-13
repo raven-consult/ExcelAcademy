@@ -1,11 +1,12 @@
 import "package:grpc/grpc.dart";
+import "package:flutter_dotenv/flutter_dotenv.dart";
 
 import "package:mobile/services/course.dart";
 import "package:mobile/services/generated/services/search/search.pbgrpc.dart";
 
-const Map<String, String> searchServiceConn = {
-  "host": "query-gdw5iipadq-uc.a.run.app",
-  "port": "443"
+Map<String, String> searchServiceConn = {
+  "host": dotenv.env["SEARCH"] ?? "localhost",
+  "port": dotenv.env["SEARCH_PORT"] ?? "443",
 };
 
 class SearchService {

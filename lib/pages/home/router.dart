@@ -61,7 +61,6 @@ class _HomeRouter extends State<HomeRouter> {
     switch (settings.name) {
       case "":
         page = Main(
-          gotoCart: _gotoCart,
           gotoLogin: gotoLogin,
           gotoSearch: _gotoSearch,
           gotoRegister: gotoRegister,

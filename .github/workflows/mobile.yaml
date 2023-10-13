@@ -133,6 +133,17 @@ jobs:
       - name: Generate protos
         run: scripts/generate_protos.sh
 
+      - name: Generate env file
+        with:
+          working-directory: infrastructure/mobile
+        run: |
+          echo "PAYMENT=$(terraform output payments)" >> .env
+          echo "SEARCH=$(terraform output search_query)" >> .env
+          echo "RECOMMENDATIONS=$(terraform output recommendations)" >> .env
+
+      - name: Move env file to root
+        run: mv infrastructure/mobile/.env .env
+
       - name: Build Android app
         run: flutter build apk
 
@@ -143,8 +154,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: artifacts
-          path: artifacts.tar
           retention-days: 1
+          path: artifacts.tar
 
   android_staging_deploy:
     name: Android Mobile Deploy

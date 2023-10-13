@@ -1,13 +1,18 @@
 import "package:flutter/material.dart";
 
+import 'package:provider/provider.dart';
+import "package:firebase_auth/firebase_auth.dart";
+
+import "package:mobile/services/cart.dart";
+
 import "cart/cart.dart";
 import "explore/explore.dart";
 import "profile/profile.dart";
 import "programs/programs.dart";
+import "home_tabs_navigator.dart";
 import "my_learning/my_learning.dart";
 
 class Main extends StatefulWidget {
-  final Function gotoCart;
   final Function gotoLogin;
   final Function gotoSearch;
   final Function gotoRegister;
@@ -15,7 +20,6 @@ class Main extends StatefulWidget {
 
   const Main({
     super.key,
-    required this.gotoCart,
     required this.gotoLogin,
     required this.gotoSearch,
     required this.gotoRegister,
@@ -30,13 +34,12 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _currentIndex = 0;
 
+  int _cartItems = 0;
+
   List<Widget> _tabs() => [
         Explore(
-          gotoCart: _gotoCart,
           gotoLogin: widget.gotoLogin,
           gotoSearch: widget.gotoSearch,
-          gotoCategories: _gotoCategories,
-          gotoMyLearning: _gotoMyLearning,
           gotoRegister: widget.gotoRegister,
           gotoNotification: widget.gotoNotification,
         ),
@@ -48,13 +51,40 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
         ),
       ];
 
+  Future<void> getUserCart() async {
+    /* Future.delayed( */
+    /*   const Duration(seconds: 4), */
+    /*   () async { */
+    /*     setState(() { */
+    /*       _cartItems = 3; */
+    /*     }); */
+    /*   }, */
+    /* ); */
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      var cartUser = await CartUser.getUser(user.uid);
+      var cartItems = await cartUser.getCartItems();
+      setState(() {
+        _cartItems = cartItems.length;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    getUserCart();
+
     _tabController = TabController(
       length: 5,
       vsync: this,
     );
+
+    _tabController.addListener(() {
+      setState(() {
+        _currentIndex = _tabController.index;
+      });
+    });
   }
 
   Widget _bottomNavigation() {
@@ -70,24 +100,30 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
             _tabController.animateTo(index);
           });
         },
-        items: const [
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
             label: "Explore",
             icon: Icon(Icons.explore),
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             label: "Programs",
             icon: Icon(Icons.category),
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             label: "My Learning",
             icon: Icon(Icons.dashboard),
           ),
           BottomNavigationBarItem(
             label: "Cart",
-            icon: Icon(Icons.shopping_cart),
+            icon: Badge.count(
+              count: _cartItems,
+              textColor: Colors.white,
+              backgroundColor: Colors.red,
+              isLabelVisible: _cartItems > 0,
+              child: const Icon(Icons.shopping_cart),
+            ),
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             label: "Profile",
             icon: Icon(Icons.account_box),
           ),
@@ -96,35 +132,17 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
     );
   }
 
-  void _gotoCategories() {
-    setState(() {
-      _currentIndex = 1;
-      _tabController.animateTo(_currentIndex);
-    });
-  }
-
-  void _gotoCart() {
-    setState(() {
-      _currentIndex = 3;
-      _tabController.animateTo(3);
-    });
-  }
-
-  void _gotoMyLearning() {
-    setState(() {
-      _currentIndex = 2;
-      _tabController.animateTo(_currentIndex);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: _bottomNavigation(),
-      body: TabBarView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _tabController,
-        children: _tabs(),
+    return Provider<HomeTabsController>(
+      create: (_) => HomeTabsController(_tabController),
+      child: Scaffold(
+        bottomNavigationBar: _bottomNavigation(),
+        body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _tabController,
+          children: _tabs(),
+        ),
       ),
     );
   }

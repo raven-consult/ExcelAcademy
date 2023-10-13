@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"strings"
 
@@ -50,6 +51,11 @@ func GetUnaryAuthorizer(authorize Authorize) grpc.UnaryServerInterceptor {
 }
 
 func firebaseAuthorizer(ctx context.Context, _ string) (string, error) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Print("Recovered in ", r)
+		}
+	}()
 	app, err := firebase.NewApp(ctx, nil)
 	if err != nil {
 		return "", err
