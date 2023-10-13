@@ -18,6 +18,7 @@ import "services/notifications.dart";
 
 import "pages/home/home.dart";
 import "pages/onboarding/onboarding.dart";
+import "pages/course_view/course_view.dart";
 
 Future<bool> isUserSignedIn() async {
   var user = await FirebaseAuth.instance.authStateChanges().first;
@@ -96,7 +97,7 @@ class ExcelAcademy extends StatelessWidget {
         theme: theme,
         darkTheme: darkTheme,
         title: "Excel Academy",
-        initialRoute: initialRoute,
+        initialRoute: "course_view",
         onGenerateRoute: _onGenerateRoute,
         builder: (context, child) {
           return ScrollConfiguration(
@@ -118,7 +119,7 @@ class ExcelAcademy extends StatelessWidget {
         page = const Home(subRoute: "");
         break;
       case "course_view":
-        page = const Home(subRoute: "");
+        page = const CourseView();
         break;
       case "onboarding":
         if (settings.arguments != null) {

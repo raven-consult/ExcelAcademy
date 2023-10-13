@@ -6,15 +6,23 @@ class UserException implements Exception {
   const UserException(this.message);
 }
 
+enum CourseImpression {
+  none,
+  like,
+  dislike,
+}
+
 class PlatformUser {
   final String uid;
   final String photoUrl;
   final String displayName;
+  final Map<String, CourseImpression> courseImpressions;
 
   const PlatformUser({
     required this.uid,
     required this.photoUrl,
     required this.displayName,
+    required this.courseImpressions,
   });
 
   static Future<PlatformUser> getUser(String uid) async {
@@ -28,6 +36,20 @@ class PlatformUser {
       uid: uid,
       photoUrl: data!["photoUrl"] ?? "",
       displayName: data["displayName"] ?? "",
+      courseImpressions: Map<String, CourseImpression>.from(
+        data["courseImpressions"] ?? {},
+      ),
     );
+  }
+
+  Future<void> updateCourseImpression(
+    String courseId,
+    CourseImpression impression,
+  ) async {
+    courseImpressions[courseId] = impression;
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .update({"courseImpressions": courseImpressions});
   }
 }
