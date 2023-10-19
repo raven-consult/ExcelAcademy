@@ -9,16 +9,17 @@ typedef CartItem = String;
 class CartUser extends PlatformUser {
   final List<CartItem> cartItems;
 
-  const CartUser({
-    required String uid,
-    required this.cartItems,
-    required String photoUrl,
-    required String displayName,
-  }) : super(
-          uid: uid,
-          photoUrl: photoUrl,
-          displayName: displayName,
-        );
+  const CartUser(
+      {required String uid,
+      required this.cartItems,
+      required String photoUrl,
+      required String displayName,
+      required Map<String, CourseImpression> courseImpressions})
+      : super(
+            uid: uid,
+            photoUrl: photoUrl,
+            displayName: displayName,
+            courseImpressions: courseImpressions);
 
   Map<String, dynamic> toJson() {
     return {
@@ -37,11 +38,12 @@ class CartUser extends PlatformUser {
     }
     var data = doc.data();
     return CartUser(
-      uid: uid,
-      photoUrl: data!["photoUrl"] ?? "",
-      displayName: data["displayName"] ?? "",
-      cartItems: data["cartItems"] ?? [],
-    );
+        uid: uid,
+        photoUrl: data!["photoUrl"] ?? "",
+        displayName: data["displayName"] ?? "",
+        cartItems: data["cartItems"] ?? [],
+        courseImpressions: Map<String, CourseImpression>.from(
+            data["courseImpressions"] ?? {}));
   }
 
   Future addToCart(CartItem item) async {
