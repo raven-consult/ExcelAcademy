@@ -15,6 +15,38 @@
       },
       "oauth_client": [
         {
+          "client_id": "1027112230279-64d5mvtib4gpfo9bs1fh0kmjpdbs4e2t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.excel_academy.mobile",
+            "certificate_hash": "03a474ff0afd04a81164a4a393df91de7f25bf02"
+          }
+        },
+        {
+          "client_id": "1027112230279-70kglqabjs8pbrpq03jp0h9csumptapd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.excel_academy.mobile",
+            "certificate_hash": "050e4a2d9fda337473909ba8492ff26b4968d8e2"
+          }
+        },
+        {
+          "client_id": "1027112230279-ekcnrh7sl4sl2vh6m2h8v7pl9gcu8lve.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.excel_academy.mobile",
+            "certificate_hash": "a99befb344051df558df379b2c388a9aa091236b"
+          }
+        },
+        {
+          "client_id": "1027112230279-orsrug45f78vqalv65jkjufq4cl7csdb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.excel_academy.mobile",
+            "certificate_hash": "c7a0cff00a98c746f8de75dafae0c14f67064631"
+          }
+        },
+        {
           "client_id": "1027112230279-clob48i1d7e0pd1uhlmgur8i7j3gu000.apps.googleusercontent.com",
           "client_type": 3
         }

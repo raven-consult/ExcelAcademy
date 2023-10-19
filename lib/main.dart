@@ -97,7 +97,7 @@ class ExcelAcademy extends StatelessWidget {
         theme: theme,
         darkTheme: darkTheme,
         title: "Excel Academy",
-        initialRoute: "course_view",
+        initialRoute: initialRoute,
         onGenerateRoute: _onGenerateRoute,
         builder: (context, child) {
           return ScrollConfiguration(
@@ -118,9 +118,12 @@ class ExcelAcademy extends StatelessWidget {
       case "home":
         page = const Home(subRoute: "");
         break;
-      case "course_view":
-        page = const CourseView();
-        break;
+      // case "notifications":
+      //   page = const CourseView();
+      //   break;
+      // case "notifications":
+      //   page = const Onboarding(subRoute: "/");
+      //   break;
       case "onboarding":
         if (settings.arguments != null) {
           var options = settings.arguments as OnboardingOptions;
