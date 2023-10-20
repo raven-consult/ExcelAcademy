@@ -16,10 +16,12 @@ class CartUser extends PlatformUser {
       required String displayName,
       required Map<String, CourseImpression> courseImpressions})
       : super(
+
             uid: uid,
             photoUrl: photoUrl,
             displayName: displayName,
             courseImpressions: courseImpressions);
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -43,7 +45,9 @@ class CartUser extends PlatformUser {
         displayName: data["displayName"] ?? "",
         cartItems: data["cartItems"] ?? [],
         courseImpressions: Map<String, CourseImpression>.from(
+
             data["courseImpressions"] ?? {}));
+
   }
 
   Future addToCart(CartItem item) async {
