@@ -93,6 +93,7 @@ flutter:
     - assets/pages/
     - assets/pages/cart/
     - assets/pages/homepage/
+    - assets/pages/notification/
     - assets/pages/onboarding/
     - assets/pages/onboarding/reset_password/
 

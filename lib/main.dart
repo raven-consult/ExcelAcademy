@@ -10,6 +10,7 @@ import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_crashlytics/firebase_crashlytics.dart";
 import "package:flutter_native_splash/flutter_native_splash.dart";
+import "package:mobile/pages/notification/notification.dart";
 
 import "theme/theme.dart";
 import "theme/color.dart";
@@ -121,9 +122,9 @@ class ExcelAcademy extends StatelessWidget {
       // case "notifications":
       //   page = const CourseView();
       //   break;
-      // case "notifications":
-      //   page = const Onboarding(subRoute: "/");
-      //   break;
+      case "notifications":
+        page = const notificationUi();
+        break;
       case "onboarding":
         if (settings.arguments != null) {
           var options = settings.arguments as OnboardingOptions;
