@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mobile/theme/typography.dart';
 
 class notificationUi extends StatelessWidget {
   notificationUi({super.key});
-  int count = 1;
+  int count = 0;
   bool checkCount(int count) {
     if (count == 0) {
       return false;
@@ -47,7 +48,25 @@ class _noNotification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [Text('1')]);
+    return Center(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        SizedBox(
+          height: 115,
+        ),
+        Image.asset('assets/pages/notification/none.png'),
+        SizedBox(
+          height: 30,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 50, right: 50),
+          child: Text(
+            'You don’t have any Notifications at the moment',
+            textAlign: TextAlign.center,
+            style: textTheme.bodyLarge,
+          ),
+        )
+      ]),
+    );
   }
 }
 
