@@ -5,7 +5,7 @@ import 'package:mobile/theme/typography.dart';
 
 class notificationUi extends StatelessWidget {
   notificationUi({super.key});
-  int count = 0;
+  int count = 1;
   bool checkCount(int count) {
     if (count == 0) {
       return false;
@@ -50,11 +50,11 @@ class _noNotification extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        SizedBox(
+        const SizedBox(
           height: 115,
         ),
         Image.asset('assets/pages/notification/none.png'),
-        SizedBox(
+        const SizedBox(
           height: 30,
         ),
         Padding(
@@ -70,13 +70,59 @@ class _noNotification extends StatelessWidget {
   }
 }
 
-class _yesNotification extends StatelessWidget {
-  const _yesNotification({
-    super.key,
-  });
+// class _yesNotification extends StatelessWidget {
+//   const _yesNotification({
+//     super.key,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(children: [Text('2')]);
+//   }
+// }
+
+class _yesNotification extends StatefulWidget {
+  const _yesNotification({super.key});
+
+  @override
+  State<_yesNotification> createState() => __yesNotificationState();
+}
+
+class __yesNotificationState extends State<_yesNotification>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 3,
+      vsync: this,
+      initialIndex: 0,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [Text('2')]);
+    return Column(
+      children: <Widget>[
+        TabBar(
+          controller: _tabController,
+          unselectedLabelColor: Color(0xff999999),
+          labelColor: Color(0xffFF822B),
+          indicatorColor: Color(0xffFF822B),
+          tabs: const <Widget>[
+            Tab(
+              text: "Activities",
+            ),
+            Tab(
+              text: "My Account",
+            ),
+            Tab(
+              text: "What's New",
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
