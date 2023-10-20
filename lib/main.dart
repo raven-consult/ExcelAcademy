@@ -123,7 +123,7 @@ class ExcelAcademy extends StatelessWidget {
       //   page = const CourseView();
       //   break;
       case "notifications":
-        page = const notificationUi();
+        page = notificationUi();
         break;
       case "onboarding":
         if (settings.arguments != null) {

@@ -3,7 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class notificationUi extends StatelessWidget {
-  const notificationUi({super.key});
+  notificationUi({super.key});
+  int count = 1;
+  bool checkCount(int count) {
+    if (count == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +35,29 @@ class notificationUi extends StatelessWidget {
           ),
         ],
       ),
+      body: checkCount(count) ? _yesNotification() : _noNotification(),
     );
+  }
+}
+
+class _noNotification extends StatelessWidget {
+  const _noNotification({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [Text('1')]);
+  }
+}
+
+class _yesNotification extends StatelessWidget {
+  const _yesNotification({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [Text('2')]);
   }
 }
