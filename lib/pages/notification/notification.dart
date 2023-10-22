@@ -122,6 +122,19 @@ class __yesNotificationState extends State<_yesNotification>
             ),
           ],
         ),
+        Flexible(
+          child: TabBarView(controller: _tabController, children: [
+            Center(
+              child: Text('Activities'),
+            ),
+            Center(
+              child: Text('My Account'),
+            ),
+            Center(
+              child: Text("What's New"),
+            )
+          ]),
+        )
       ],
     );
   }
