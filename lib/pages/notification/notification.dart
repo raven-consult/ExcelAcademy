@@ -5,7 +5,7 @@ import 'package:mobile/theme/typography.dart';
 
 class notificationUi extends StatelessWidget {
   notificationUi({super.key});
-  int count = 1;
+  int count = 0;
   bool checkCount(int count) {
     if (count == 0) {
       return false;
