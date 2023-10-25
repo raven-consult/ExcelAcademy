@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -5,7 +6,8 @@ import 'package:mobile/theme/typography.dart';
 
 class notificationUi extends StatelessWidget {
   notificationUi({super.key});
-  int count = 0;
+
+  int count = 1;
   bool checkCount(int count) {
     if (count == 0) {
       return false;

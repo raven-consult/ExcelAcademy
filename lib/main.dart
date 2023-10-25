@@ -23,6 +23,7 @@ import "pages/course_view/course_view.dart";
 
 Future<bool> isUserSignedIn() async {
   var user = await FirebaseAuth.instance.authStateChanges().first;
+  print({"user": user?.uid});
   return user != null;
 }
 

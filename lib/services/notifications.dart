@@ -16,7 +16,7 @@ Future<void> initializeNotifications() async {
     if (message == null) {
       return;
     }
-    // navigatorKey.currentState?.push(notificationUi() as Route<Object?>);
+    navigatorKey.currentState?.push(notificationUi() as Route<Object?>);
   }
 
 //enable push  notification for ios

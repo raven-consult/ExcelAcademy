@@ -1,19 +1,28 @@
-// // push notification
-// import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:convert' as convert;
 
-// void pushNotification(Map data){
-//   FirebaseMessaging messaging = FirebaseMessaging.instance;
+import 'package:http/http.dart' as http;
 
+// push notification
+class PushNotification {
+  // final String url;
 
-//   final mes = RemoteMessage(
-//     data: <String, String>{
-//       'title': 'Notification Title',
-//       'body': 'Notification Body',
-//     },
-//     to: data['token'], // The FCM token of the recipient device
-//   );
-// }
+  // PushNotification(this.url);
 
-// // fetch notification
+  Future<void> push(Map data) async {
+    try {
+      final res = await http.post(
+        Uri.parse('uri'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: convert.JsonEncoder(data as Object? Function(dynamic object)?),
+      );
+    } catch (e) {
+      print('$e');
+    }
+  }
+}
 
-// //create notification dummy data
+// fetch notification
+
+//create notification dummy data
