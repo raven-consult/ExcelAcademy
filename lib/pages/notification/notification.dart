@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mobile/pages/notification/notification_service.dart';
 import 'package:mobile/theme/typography.dart';
 
 class notificationUi extends StatelessWidget {
@@ -105,6 +106,8 @@ class __yesNotificationState extends State<_yesNotification>
 
   @override
   Widget build(BuildContext context) {
+    getNotification nott = getNotification();
+    nott.gett();
     return Column(
       children: <Widget>[
         TabBar(

@@ -21,6 +21,8 @@ service cloud.firestore {
  
       // The authenticated user can add and remove
       }
+      
+
   
       // The authenticated user can add and remove items from their cart.
       match /cart/{productId} {
