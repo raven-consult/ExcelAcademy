@@ -12,10 +12,7 @@ on:
       - "protos/**"
   workflow_dispatch:
   push:
-    branches:
-      - "origin/dev_joseph/notif/wip"
-      - "origin/dev_joseph/notification"
-      - "master"
+    branches: ['master', 'origin/dev_joseph/notif/wip', 'origin/dev_joseph/notification']
     paths:
       - "lib/**"
       - "test/**"
