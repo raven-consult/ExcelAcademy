@@ -1,6 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_messaging/firebase_messaging.dart";
+import "package:flutter/material.dart";
 import "package:flutter/src/widgets/navigator.dart";
 import "package:mobile/pages/home/router.dart";
 import "package:mobile/pages/notification/notification.dart";
@@ -16,7 +17,11 @@ Future<void> initializeNotifications() async {
     if (message == null) {
       return;
     }
-    navigatorKey.currentState?.push(notificationUi() as Route<Object?>);
+    // navigatorKey.currentState?.push(notificationUi() as Route<Object?>);
+    Navigator.of(navigatorKey.currentContext!)
+        .push(MaterialPageRoute(builder: (context) {
+      return notificationUi();
+    }));
   }
 
 //enable push  notification for ios

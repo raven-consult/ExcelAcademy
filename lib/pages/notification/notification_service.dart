@@ -43,29 +43,83 @@ class PushNotification {
 // fetch notification
 
 class getNotification {
-  Future<List<QueryDocumentSnapshot>> gett() async {
+  Future<Map<String, List<NotificationModel>>> getNotifications() async {
     var user = FirebaseAuth.instance.currentUser;
     var id = user!.uid;
+    // Create a reference to your Firestore collection.
 
     try {
       final collectionReference = FirebaseFirestore.instance
           .collection('users')
           .doc(id)
           .collection('notifications');
-      final querySnapshot = await collectionReference.get();
+      final activies = await collectionReference
+          .where('notif_type', isEqualTo: 'activities')
+          .orderBy('date', descending: true)
+          .get();
+      final account = await collectionReference
+          .where('notif_type', isEqualTo: 'account')
+          .orderBy('date', descending: true)
+          .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        print(querySnapshot.docs);
-        return querySnapshot.docs;
-      } else {
-        return [];
-      }
+      final news = await collectionReference
+          .where('notif_type', isEqualTo: 'news')
+          .orderBy('date', descending: true)
+          .get();
+
+      List<NotificationModel> notifications_activities = [];
+      List<NotificationModel> notifications_account = [];
+      List<NotificationModel> notifications_new = [];
+      activies.docs.forEach((doc) {
+        notifications_activities.add(NotificationModel(
+            title: doc['title'],
+            body: doc['body'],
+            notif_type: doc['notif_type'],
+            date: doc['date']));
+      });
+
+      account.docs.forEach((doc) {
+        notifications_account.add(NotificationModel(
+            title: doc['title'],
+            body: doc['body'],
+            notif_type: doc['notif_type'],
+            date: doc['date']));
+      });
+
+      news.docs.forEach((doc) {
+        notifications_new.add(NotificationModel(
+            title: doc['title'],
+            body: doc['body'],
+            notif_type: doc['notif_type'],
+            date: doc['date']));
+      });
+
+      Map<String, List<NotificationModel>> notificationMap = {
+        "activities": notifications_activities,
+        "account": notifications_account,
+        "news": notifications_new
+      };
+
+      return notificationMap;
     } catch (e) {
+      print('error');
       print(e);
-      return [];
+      return {};
     }
   }
 }
 
-//create notification dummy data
+//Notification Model
 
+class NotificationModel {
+  String title;
+  String body;
+  String notif_type;
+  Timestamp date;
+
+  NotificationModel(
+      {required this.title,
+      required this.body,
+      required this.notif_type,
+      required this.date});
+}

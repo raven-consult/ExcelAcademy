@@ -2,15 +2,28 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart';
 import 'package:mobile/pages/notification/notification_service.dart';
+import 'package:mobile/services/notifications.dart';
 import 'package:mobile/theme/typography.dart';
+import 'package:intl/intl.dart';
 
 class notificationUi extends StatelessWidget {
   notificationUi({super.key});
 
-  int count = 1;
-  bool checkCount(int count) {
-    if (count == 0) {
+  Future<dynamic> _getNotifications() async {
+    var currentUser = FirebaseAuth.instance.currentUser;
+    var userNotifications =
+        await NotificationService.getMyNotifications(currentUser!.uid);
+
+    var _totalNotifications = userNotifications.length;
+
+    return _totalNotifications;
+  }
+
+  bool checkCount(notification) {
+    print('notification');
+    if (notification == 0) {
       return false;
     } else {
       return true;
@@ -39,7 +52,9 @@ class notificationUi extends StatelessWidget {
           ),
         ],
       ),
-      body: checkCount(count) ? _yesNotification() : _noNotification(),
+      body: checkCount(_getNotifications())
+          ? _yesNotification()
+          : _noNotification(),
     );
   }
 }
@@ -106,8 +121,6 @@ class __yesNotificationState extends State<_yesNotification>
 
   @override
   Widget build(BuildContext context) {
-    getNotification nott = getNotification();
-    nott.gett();
     return Column(
       children: <Widget>[
         TabBar(
@@ -129,18 +142,186 @@ class __yesNotificationState extends State<_yesNotification>
         ),
         Flexible(
           child: TabBarView(controller: _tabController, children: [
-            Center(
-              child: Text('Activities'),
+            Container(
+              child: Activities_Widget(),
             ),
             Center(
-              child: Text('My Account'),
+              child: Account_Widget(),
             ),
             Center(
-              child: Text("What's New"),
+              child: News_Widget(),
             )
           ]),
         )
       ],
     );
+  }
+}
+
+class Activities_Widget extends StatelessWidget {
+  Activities_Widget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, List<NotificationModel>>>(
+        future: getNotification().getNotifications(),
+        builder: (context, snapshot) {
+          final notifications = snapshot.data;
+          final activities = notifications?['activities'];
+
+          if (activities == null || activities.isEmpty) {
+            return Center(child: Text('...'));
+          }
+          return ListView.builder(
+              itemCount: activities.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding:
+                      EdgeInsets.only(left: 28, right: 28, top: 10, bottom: 10),
+                  child: Row(
+                    children: [
+                      Image.asset('assets/pages/notification/activities.png'),
+                      SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                activities[index].title,
+                                style: textTheme.titleLarge,
+                              ),
+                              const SizedBox(
+                                width: 80,
+                              ),
+                              Text(DateFormat.EEEE()
+                                  .format(activities[index].date.toDate()))
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(activities[index].body),
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              });
+        });
+  }
+}
+
+class Account_Widget extends StatelessWidget {
+  Account_Widget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, List<NotificationModel>>>(
+        future: getNotification().getNotifications(),
+        builder: (context, snapshot) {
+          final notifications = snapshot.data;
+          final account = notifications?['account'];
+
+          if (account == null || account.isEmpty) {
+            return Center(child: Text('...'));
+          }
+          return ListView.builder(
+              itemCount: account.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding:
+                      EdgeInsets.only(left: 28, right: 28, top: 10, bottom: 10),
+                  child: Row(
+                    children: [
+                      Image.asset('assets/pages/notification/account.png'),
+                      SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                account[index].title,
+                                style: textTheme.titleLarge,
+                              ),
+                              const SizedBox(
+                                width: 80,
+                              ),
+                              Text(DateFormat.EEEE()
+                                  .format(account[index].date.toDate()))
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(account[index].body),
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              });
+        });
+  }
+}
+
+class News_Widget extends StatelessWidget {
+  News_Widget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, List<NotificationModel>>>(
+        future: getNotification().getNotifications(),
+        builder: (context, snapshot) {
+          final notifications = snapshot.data;
+          final news = notifications?['news'];
+
+          if (news == null || news.isEmpty) {
+            return Center(child: Text('...'));
+          }
+          return ListView.builder(
+              itemCount: news.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding:
+                      EdgeInsets.only(left: 28, right: 28, top: 10, bottom: 10),
+                  child: Row(
+                    children: [
+                      Image.asset('assets/pages/notification/new.png'),
+                      SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                news[index].title,
+                                style: textTheme.titleLarge,
+                              ),
+                              const SizedBox(
+                                width: 80,
+                              ),
+                              Text(DateFormat.EEEE()
+                                  .format(news[index].date.toDate()))
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(news[index].body),
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              });
+        });
   }
 }

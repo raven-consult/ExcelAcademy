@@ -56,6 +56,12 @@ dependencies:
   money_formatter: ^0.0.3
   http: ^0.13.6
   flutter_dotenv: ^5.1.0
+  intl: ^0.17.0
+  firebase_ui_firestore: ^1.5.12
+  flutter_speed_dial: ^7.0.0
+
+dependency_overrides:
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
@@ -94,6 +100,7 @@ flutter:
     - assets/pages/cart/
     - assets/pages/homepage/
     - assets/pages/notification/
+    - assets/pages/community/
     - assets/pages/onboarding/
     - assets/pages/onboarding/reset_password/
 
