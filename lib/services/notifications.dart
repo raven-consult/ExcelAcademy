@@ -1,6 +1,10 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_messaging/firebase_messaging.dart";
+import "package:flutter/material.dart";
+import "package:flutter/src/widgets/navigator.dart";
+import "package:mobile/pages/home/router.dart";
+import "package:mobile/pages/notification/notification.dart";
 
 Future<void> initializeNotifications() async {
   var user = FirebaseAuth.instance.currentUser;
@@ -9,12 +13,39 @@ Future<void> initializeNotifications() async {
     return;
   }
 
-  var token = await FirebaseMessaging.instance.getToken();
+  void handleMessage(RemoteMessage? message) {
+    if (message == null) {
+      return;
+    }
+    // navigatorKey.currentState?.push(notificationUi() as Route<Object?>);
+    Navigator.of(navigatorKey.currentContext!)
+        .push(MaterialPageRoute(builder: (context) {
+      return notificationUi();
+    }));
+  }
+
+//enable push  notification for ios
+  Future initPushNotification() async {
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+            alert: true, badge: true, sound: true);
+  }
+
+//push notification on all state of the app (terminated, background)
+  FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
+  FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
+  FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
+
+  final _firebaseMessaging = FirebaseMessaging.instance;
+  await _firebaseMessaging.requestPermission();
+  var token = await _firebaseMessaging.getToken();
+  print({'token': token});
   if (token != null) {
     await NotificationService.setMyFCMToken(user.uid, token);
   }
+  initPushNotification();
 
-  FirebaseMessaging.instance.onTokenRefresh.listen((token) async {
+  _firebaseMessaging.onTokenRefresh.listen((token) async {
     await NotificationService.setMyFCMToken(user.uid, token);
   });
 }
@@ -91,3 +122,5 @@ class Notification {
     );
   }
 }
+
+Future<void> handleBackgroundMessage(RemoteMessage message) async {}
