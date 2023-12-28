@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
+import "package:mobile/pages/community/ui/community_home.dart";
 
 import 'package:provider/provider.dart';
 import "package:firebase_auth/firebase_auth.dart";
@@ -142,6 +144,25 @@ class _Main extends State<Main> with SingleTickerProviderStateMixin {
           physics: const NeverScrollableScrollPhysics(),
           controller: _tabController,
           children: _tabs(),
+        ),
+        floatingActionButton: SpeedDial(
+          animatedIcon: AnimatedIcons.add_event,
+          backgroundColor: const Color(0xffD0D1D2),
+          iconTheme: const IconThemeData(color: Color(0xff323232)),
+          children: [
+            SpeedDialChild(
+              label: 'Community Groups',
+              child: Icon(Icons.people),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CommunityHomeUi()),
+                );
+              },
+            ),
+            SpeedDialChild(
+                label: 'Chat with the admin', child: Icon(Icons.chat))
+          ],
         ),
       ),
     );

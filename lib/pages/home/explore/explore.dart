@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:mobile/pages/community/ui/community_home.dart";
 
 import "package:provider/provider.dart";
 
@@ -60,6 +61,7 @@ class _Explore extends State<Explore> with AutomaticKeepAliveClientMixin {
               goToNotifications: widget.gotoNotification,
               goToCart: context.read<HomeTabsController>().gotoCart,
             ),
+            const SizedBox(height: 24),
             const SizedBox(height: 24),
             Search(
               gotoSearch: widget.gotoSearch,
