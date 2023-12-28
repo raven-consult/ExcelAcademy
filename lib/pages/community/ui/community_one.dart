@@ -3,10 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/pages/community/logic/fetch_forum.dart';
+import 'package:mobile/pages/community/ui/question_list.dart';
 
 class CommunityOne extends StatelessWidget {
   final String forumId;
-  CommunityOne({super.key, required this.forumId});
+  final String forumName;
+  CommunityOne({super.key, required this.forumId, required this.forumName});
 
   late TabController _tabController;
 
@@ -16,97 +18,106 @@ class CommunityOne extends StatelessWidget {
     print(forumData);
     return Scaffold(
         appBar: AppBar(),
-        body: FutureBuilder<Forum>(
-            future: fetchForum(forumId),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else if (!snapshot.hasData || snapshot.data == null) {
-                return Text('No data available');
-              } else {
-                Forum forum = snapshot.data!;
-                Timestamp time = forum.date;
-                String dateTime =
-                    DateFormat('dd MM yyyy').format(time.toDate().toLocal());
+        body: SingleChildScrollView(
+          child: FutureBuilder<Forum>(
+              future: fetchForum(forumId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (!snapshot.hasData || snapshot.data == null) {
+                  return Text('No data available');
+                } else {
+                  Forum forum = snapshot.data!;
+                  Timestamp time = forum.date;
+                  String dateTime =
+                      DateFormat('dd MM yyyy').format(time.toDate().toLocal());
 
-                return Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Image.asset('assets/pages/community/bg.jpg'),
-                        Container(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8, right: 8),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: 160),
-                                  Container(
-                                    padding: EdgeInsets.all(8),
-                                    decoration:
-                                        BoxDecoration(color: Color(0xffFF822B)),
-                                    child: Text(
-                                      forum.category,
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    forum.title,
-                                    style: TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                ]),
-                          ),
-                        )
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8, right: 8),
-                      child: Column(
+                  return Column(
+                    children: [
+                      Stack(
                         children: [
-                          SizedBox(height: 20),
-                          Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(forum.creator),
-                                  SizedBox(height: 4),
-                                  Text(forum.certification),
-                                  SizedBox(height: 4),
-                                  Text('Created on $dateTime'),
-                                ],
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 30),
-                          ForumTab(),
+                          Image.asset('assets/pages/community/bg.jpg'),
+                          Container(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8, right: 8),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: 160),
+                                    Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                          color: Color(0xffFF822B)),
+                                      child: Text(
+                                        forum.category,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      forum.title,
+                                      style: TextStyle(
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  ]),
+                            ),
+                          )
                         ],
                       ),
-                    )
-                  ],
-                );
-              }
-            }));
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8, right: 8),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 20),
+                            Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(forum.creator),
+                                    SizedBox(height: 4),
+                                    Text(forum.certification),
+                                    SizedBox(height: 4),
+                                    Text('Created on $dateTime'),
+                                  ],
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 30),
+                            ForumTab(
+                              forumId: forumId,
+                              forumName: forumName,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  );
+                }
+              }),
+        ));
   }
 }
 
 class ForumTab extends StatefulWidget {
-  const ForumTab({super.key});
+  final String forumId;
+  final String forumName;
+  const ForumTab({super.key, required this.forumId, required this.forumName});
 
   @override
-  State<ForumTab> createState() => _ForumTabState();
+  State<ForumTab> createState() => _ForumTabState(forumId: forumId, forumName);
 }
 
 class _ForumTabState extends State<ForumTab>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
+  _ForumTabState(this.forumName, {required this.forumId});
   @override
   void initState() {
     super.initState();
@@ -116,6 +127,9 @@ class _ForumTabState extends State<ForumTab>
       initialIndex: 0,
     );
   }
+
+  final String forumId;
+  final String forumName;
 
   @override
   Widget build(BuildContext context) {
@@ -145,9 +159,17 @@ class _ForumTabState extends State<ForumTab>
             child: TabBarView(
               controller: _tabController,
               children: [
-                Container(child: InstructionTab()),
+                Container(
+                    child: InstructionTab(
+                  forumId: forumId,
+                  forumName: forumName,
+                )),
                 Container(child: Members()),
-                Container(child: AboutTab()),
+                Container(
+                    child: AboutTab(
+                  forumId: forumId,
+                  forumName: forumName,
+                )),
                 Container(child: MessageAdmin()),
               ],
             ),
@@ -159,7 +181,10 @@ class _ForumTabState extends State<ForumTab>
 }
 
 class InstructionTab extends StatelessWidget {
-  const InstructionTab({super.key});
+  final String forumId;
+  final String forumName;
+  const InstructionTab(
+      {super.key, required this.forumId, required this.forumName});
 
   @override
   Widget build(BuildContext context) {
@@ -203,10 +228,14 @@ class InstructionTab extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0))),
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => CommunityListUi()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => QuestionList(
+                              forumId: forumId,
+                              forumName: forumName,
+                            )),
+                  );
                 },
                 child: Text('JOIN GROUP NOW'),
               )
@@ -226,7 +255,9 @@ class Members extends StatelessWidget {
 }
 
 class AboutTab extends StatelessWidget {
-  const AboutTab({super.key});
+  final String forumId;
+  final String forumName;
+  const AboutTab({super.key, required this.forumId, required this.forumName});
 
   @override
   Widget build(BuildContext context) {
@@ -246,10 +277,14 @@ class AboutTab extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0))),
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => CommunityListUi()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => QuestionList(
+                              forumId: forumId,
+                              forumName: forumName,
+                            )),
+                  );
                 },
                 child: Text('JOIN GROUP NOW'),
               )
@@ -264,6 +299,62 @@ class MessageAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: const Text('Building...'));
+    return SizedBox(
+      height: 200,
+      width: double.maxFinite,
+      child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Leave a message or question for the admin'),
+              Container(
+                padding: EdgeInsets.only(left: 10, right: 10),
+                height: 50,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: Color(0xffF3F3F1),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: TextField(
+                      decoration: InputDecoration(
+                          hintText: 'Enter your message...',
+                          hintStyle: TextStyle(fontSize: 15),
+                          border: InputBorder.none),
+                    )),
+                    SizedBox(width: 10),
+                    Container(
+                      padding: EdgeInsets.only(left: 4),
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0xffFFE6D5),
+                      ),
+                      child: Center(
+                        child: Transform.rotate(
+                          angle: 315 * (3.141592653589793 / 180),
+                          child: GestureDetector(
+                            onTap: (() {
+                              // send message
+                            }),
+                            child: Icon(
+                              Icons.send_rounded,
+                              color: Color(0xffFF822B),
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          )),
+    );
   }
 }

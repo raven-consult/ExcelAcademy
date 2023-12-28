@@ -85,6 +85,7 @@ class CommunityListUi extends StatelessWidget {
                         MaterialPageRoute(builder: (context) {
                       return CommunityOne(
                         forumId: snapshot.id,
+                        forumName: forum['title'],
                       );
                     }));
                   },
